@@ -69,6 +69,32 @@ class MainWindow(QMainWindow):
 
 
 
+    def keyPressEvent(self, e):
+        if(self.glWidget.currentMove == -1):
+            if e.key()==Qt.Key_U:
+                self.glWidget.currentMove = CubeRenderer.U;
+            if e.key()==Qt.Key_D:
+                self.glWidget.currentMove = CubeRenderer.D;
+            if e.key()==Qt.Key_L:
+                self.glWidget.currentMove = CubeRenderer.L;
+            if e.key()==Qt.Key_R:
+                self.glWidget.currentMove = CubeRenderer.R;
+            if e.key()==Qt.Key_F:
+                self.glWidget.currentMove = CubeRenderer.F;
+            if e.key()==Qt.Key_B:
+                self.glWidget.currentMove = CubeRenderer.B;
+            if e.key()==Qt.Key_1:
+                self.glWidget.currentMove = CubeRenderer.Ui;
+            if e.key()==Qt.Key_2:
+                self.glWidget.currentMove = CubeRenderer.Di;
+            if e.key()==Qt.Key_3:
+                self.glWidget.currentMove = CubeRenderer.Li;
+            if e.key()==Qt.Key_4:
+                self.glWidget.currentMove = CubeRenderer.Ri;
+            if e.key()==Qt.Key_5:
+                self.glWidget.currentMove = CubeRenderer.Fi;
+            if e.key()==Qt.Key_6:
+                self.glWidget.currentMove = CubeRenderer.Bi;
 
 if __name__ == '__main__':
 

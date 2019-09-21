@@ -44,7 +44,7 @@ class CubeRenderer(QOpenGLWidget):
 
         self.currentMove = -1
         self.thetaTotal = 0
-        self.moveSpeed = 2.5
+        self.moveSpeed = 10.0
 
         self.cubeRot = []
         self.cubePos = []
@@ -151,7 +151,7 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.xRot:
             self.xRot = angle
-            self.update()
+            #self.update()
 
 
     def setYRotation(self, angle):
@@ -159,7 +159,7 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.yRot:
             self.yRot = angle
-            self.update()
+            #self.update()
 
 
     def setZRotation(self, angle):
@@ -167,7 +167,7 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.zRot:
             self.zRot = angle
-            self.update()
+            #self.update()
 
 
     def initializeGL(self):
@@ -425,7 +425,20 @@ class CubeRenderer(QOpenGLWidget):
             self.moveL()
         elif self.currentMove == CubeRenderer.B:
             self.moveB()
+        elif self.currentMove == CubeRenderer.Ui:
+            self.moveUi()
+        elif self.currentMove == CubeRenderer.Ri:
+            self.moveRi()
+        elif self.currentMove == CubeRenderer.Fi:
+            self.moveFi()
+        elif self.currentMove == CubeRenderer.Di:
+            self.moveDi()
+        elif self.currentMove == CubeRenderer.Li:
+            self.moveLi()
+        elif self.currentMove == CubeRenderer.Bi:
+            self.moveBi()
         else:
+            self.update()
             return
 
         if(self.currentMove == -1):
@@ -476,6 +489,11 @@ class CubeRenderer(QOpenGLWidget):
 
 
 
+
+
+
+
+
     def moveU(self):
         self.thetaTotal += self.moveSpeed
         
@@ -489,8 +507,6 @@ class CubeRenderer(QOpenGLWidget):
         for x in range(3):
             for z in range(3):
                 self.cubeRot[x][2][z] = (self.orgTheta[z+3*x][0], self.orgTheta[z+3*x][1] - self.thetaTotal, self.orgTheta[z+3*x][2], 0, -1.0, 0)
-                # self.cubeRot[x][2][z] = (self.thetaTotal, 0, -1.0, 0)
-
 
         if(self.thetaTotal >= 90):
             self.currentMove = -2
@@ -504,17 +520,6 @@ class CubeRenderer(QOpenGLWidget):
             self.cycleStickers((CubeRenderer.F, 0, 0),(CubeRenderer.R, 2, 0),(CubeRenderer.B, 2, 2),(CubeRenderer.L, 0, 2)) #U Side Lcorners
             self.cycleStickers((CubeRenderer.F, 0, 2),(CubeRenderer.R, 0, 0),(CubeRenderer.B, 2, 0),(CubeRenderer.L, 2, 2)) #U Side Rcorners
 
-            # print(self.cubePos[2][2][2])
-
-            # self.swap4Cubes((0,2,0),(2,2,0),(2,2,2),(0,2,2)) #in directions
-            # self.swap4Cubes((0,2,0),(2,2,0),(2,2,2),(0,2,2))
-            # self.swap4Cubes((0,2,0),(2,2,0),(2,2,2),(0,2,2))
-            # self.swap4Cubes((0,2,1),(1,2,0),(2,2,1),(1,2,2))
-            # self.swap4Cubes((0,2,2),(2,2,2),(2,2,0),(0,2,0))
-
-            # print(self.cubePos[2][2][2])
-
-
 
 
     def moveR(self):
@@ -525,19 +530,16 @@ class CubeRenderer(QOpenGLWidget):
 
             for y in range(3):
                 for z in range(3):
-                    # self.orgTheta.append(self.cubeRot[2][y][z][0])
                     self.orgTheta.append((self.cubeRot[2][y][z][0], self.cubeRot[2][y][z][1], self.cubeRot[2][y][z][2]))
 
         for y in range(3):
             for z in range(3):
-                # self.cubeRot[2][y][z] = (self.orgTheta[z+3*y] + self.thetaTotal, -1.0, 0, 0)
                 self.cubeRot[2][y][z] = (self.orgTheta[z+3*y][0] - self.thetaTotal, self.orgTheta[z+3*y][1], self.orgTheta[z+3*y][2], -1.0, 0.0, 0)
 
         if(self.thetaTotal >= 90):
             self.currentMove = -2
             self.firstPassMove = True
             self.orgTheta = []
-            # self.swap4Cubes((2,2,2),(2,2,0),(2,0,0),(2,0,2))#in direction
 
             #goes opposite of direction
             self.cycleStickers((CubeRenderer.R, 0, 0),(CubeRenderer.R, 2, 0),(CubeRenderer.R, 2, 2),(CubeRenderer.R, 0, 2)) #R corners
@@ -545,8 +547,6 @@ class CubeRenderer(QOpenGLWidget):
             self.cycleStickers((CubeRenderer.U, 1, 2),(CubeRenderer.F, 1, 2),(CubeRenderer.D, 1, 0),(CubeRenderer.B, 1, 2)) #R Side Edges
             self.cycleStickers((CubeRenderer.U, 0, 2),(CubeRenderer.F, 0, 2),(CubeRenderer.D, 2, 0),(CubeRenderer.B, 0, 2)) #R Side left corner
             self.cycleStickers((CubeRenderer.U, 2, 2),(CubeRenderer.F, 2, 2),(CubeRenderer.D, 0, 0),(CubeRenderer.B, 2, 2)) #R Side right corners
-
-
 
 
     def moveF(self):
@@ -557,19 +557,16 @@ class CubeRenderer(QOpenGLWidget):
 
                 for x in range(3):
                     for y in range(3):
-                        # self.orgTheta.append(self.cubeRot[2][y][z][0])
                         self.orgTheta.append((self.cubeRot[x][y][2][0], self.cubeRot[x][y][2][1], self.cubeRot[x][y][2][2]))
 
             for x in range(3):
                 for y in range(3):
-                    # self.cubeRot[2][y][z] = (self.orgTheta[z+3*y] + self.thetaTotal, -1.0, 0, 0)
                     self.cubeRot[x][y][2] = (self.orgTheta[y+3*x][0], self.orgTheta[y+3*x][1], self.orgTheta[y+3*x][2]-self.thetaTotal, 0.0, 0.0, 1.0)
 
             if(self.thetaTotal >= 90):
                 self.currentMove = -2
                 self.firstPassMove = True
                 self.orgTheta = []
-                # self.swap4Cubes((2,2,2),(2,2,0),(2,0,0),(2,0,2))#in direction
 
                 #goes opposite of direction
                 self.cycleStickers((CubeRenderer.F, 0, 0),(CubeRenderer.F, 2, 0),(CubeRenderer.F, 2, 2),(CubeRenderer.F, 0, 2)) #F corners
@@ -586,7 +583,6 @@ class CubeRenderer(QOpenGLWidget):
 
                 for x in range(3):
                     for z in range(3):
-                        # self.orgTheta.append(self.cubeRot[2][y][z][0])
                         self.orgTheta.append((self.cubeRot[x][0][z][0], self.cubeRot[x][0][z][1], self.cubeRot[x][0][z][2]))
 
             for x in range(3):
@@ -597,10 +593,8 @@ class CubeRenderer(QOpenGLWidget):
                 self.currentMove = -2
                 self.firstPassMove = True
                 self.orgTheta = []
-                # self.swap4Cubes((2,2,2),(2,2,0),(2,0,0),(2,0,2))#in direction
 
                 #goes opposite of direction
-                # for i in range(3): #quick fix
                 self.cycleStickers((CubeRenderer.D, 0, 0),(CubeRenderer.D, 2, 0),(CubeRenderer.D, 2, 2),(CubeRenderer.D, 0, 2)) #D corners
                 self.cycleStickers((CubeRenderer.D, 1, 0),(CubeRenderer.D, 2, 1),(CubeRenderer.D, 1, 2),(CubeRenderer.D, 0, 1)) #D edges
                 self.cycleStickers((CubeRenderer.R, 1, 2),(CubeRenderer.F, 2, 1),(CubeRenderer.L, 1, 0),(CubeRenderer.B, 0, 1)) #D Side Edges
@@ -625,10 +619,8 @@ class CubeRenderer(QOpenGLWidget):
             self.currentMove = -2
             self.firstPassMove = True
             self.orgTheta = []
-            # self.swap4Cubes((2,2,2),(2,2,0),(2,0,0),(2,0,2))#in direction
 
             #goes opposite of direction
-            # for i in range(3): #quick fix
             self.cycleStickers((CubeRenderer.L, 0, 0),(CubeRenderer.L, 2, 0),(CubeRenderer.L, 2, 2),(CubeRenderer.L, 0, 2)) #D corners
             self.cycleStickers((CubeRenderer.L, 1, 0),(CubeRenderer.L, 2, 1),(CubeRenderer.L, 1, 2),(CubeRenderer.L, 0, 1)) #D edges
             for i in range(3): #quick fix
@@ -654,12 +646,195 @@ class CubeRenderer(QOpenGLWidget):
             self.currentMove = -2
             self.firstPassMove = True
             self.orgTheta = []
-            # self.swap4Cubes((2,2,2),(2,2,0),(2,0,0),(2,0,2))#in direction
 
             # #goes opposite of direction
             self.cycleStickers((CubeRenderer.B, 0, 0),(CubeRenderer.B, 2, 0),(CubeRenderer.B, 2, 2),(CubeRenderer.B, 0, 2)) #D corners
             self.cycleStickers((CubeRenderer.B, 1, 0),(CubeRenderer.B, 2, 1),(CubeRenderer.B, 1, 2),(CubeRenderer.B, 0, 1)) #D edges
-            # for i in range(3):
             self.cycleStickers((CubeRenderer.L, 0, 1),(CubeRenderer.U, 0, 1),(CubeRenderer.R, 0, 1),(CubeRenderer.D, 0, 1)) #D Side Edges
             self.cycleStickers((CubeRenderer.L, 0, 0),(CubeRenderer.U, 0, 0),(CubeRenderer.R, 0, 0),(CubeRenderer.D, 0, 0)) #D Side Edges
             self.cycleStickers((CubeRenderer.L, 0, 2),(CubeRenderer.U, 0, 2),(CubeRenderer.R, 0, 2),(CubeRenderer.D, 0, 2)) #D Side Edges
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def moveUi(self):
+        self.thetaTotal += self.moveSpeed
+        
+        if(self.firstPassMove):
+            self.firstPassMove = False
+
+            for x in range(3):
+                for z in range(3):
+                    self.orgTheta.append((self.cubeRot[x][2][z][0], self.cubeRot[x][2][z][1], self.cubeRot[x][2][z][2]))
+
+        for x in range(3):
+            for z in range(3):
+                self.cubeRot[x][2][z] = (self.orgTheta[z+3*x][0], self.orgTheta[z+3*x][1] + self.thetaTotal, self.orgTheta[z+3*x][2], 0, 1.0, 0)
+
+        if(self.thetaTotal >= 90):
+            self.currentMove = -2
+            self.firstPassMove = True
+            self.orgTheta = []
+
+            #goes opposite of direction
+            for i in range(3):
+                self.cycleStickers((CubeRenderer.U, 0, 0),(CubeRenderer.U, 2, 0),(CubeRenderer.U, 2, 2),(CubeRenderer.U, 0, 2)) #U corners
+                self.cycleStickers((CubeRenderer.U, 1, 0),(CubeRenderer.U, 2, 1),(CubeRenderer.U, 1, 2),(CubeRenderer.U, 0, 1)) #U edges
+                self.cycleStickers((CubeRenderer.F, 0, 1),(CubeRenderer.R, 1, 0),(CubeRenderer.B, 2, 1),(CubeRenderer.L, 1, 2)) #U Side Edges
+                self.cycleStickers((CubeRenderer.F, 0, 0),(CubeRenderer.R, 2, 0),(CubeRenderer.B, 2, 2),(CubeRenderer.L, 0, 2)) #U Side Lcorners
+                self.cycleStickers((CubeRenderer.F, 0, 2),(CubeRenderer.R, 0, 0),(CubeRenderer.B, 2, 0),(CubeRenderer.L, 2, 2)) #U Side Rcorners
+
+
+
+    def moveRi(self):
+        self.thetaTotal += self.moveSpeed
+        
+        if(self.firstPassMove):
+            self.firstPassMove = False
+
+            for y in range(3):
+                for z in range(3):
+                    self.orgTheta.append((self.cubeRot[2][y][z][0], self.cubeRot[2][y][z][1], self.cubeRot[2][y][z][2]))
+
+        for y in range(3):
+            for z in range(3):
+                self.cubeRot[2][y][z] = (self.orgTheta[z+3*y][0] + self.thetaTotal, self.orgTheta[z+3*y][1], self.orgTheta[z+3*y][2], 1.0, 0.0, 0)
+
+        if(self.thetaTotal >= 90):
+            self.currentMove = -2
+            self.firstPassMove = True
+            self.orgTheta = []
+            
+            for i in range(3):
+                #goes opposite of direction
+                self.cycleStickers((CubeRenderer.R, 0, 0),(CubeRenderer.R, 2, 0),(CubeRenderer.R, 2, 2),(CubeRenderer.R, 0, 2)) #R corners
+                self.cycleStickers((CubeRenderer.R, 1, 0),(CubeRenderer.R, 2, 1),(CubeRenderer.R, 1, 2),(CubeRenderer.R, 0, 1)) #R edges
+                self.cycleStickers((CubeRenderer.U, 1, 2),(CubeRenderer.F, 1, 2),(CubeRenderer.D, 1, 0),(CubeRenderer.B, 1, 2)) #R Side Edges
+                self.cycleStickers((CubeRenderer.U, 0, 2),(CubeRenderer.F, 0, 2),(CubeRenderer.D, 2, 0),(CubeRenderer.B, 0, 2)) #R Side left corner
+                self.cycleStickers((CubeRenderer.U, 2, 2),(CubeRenderer.F, 2, 2),(CubeRenderer.D, 0, 0),(CubeRenderer.B, 2, 2)) #R Side right corners
+
+
+    def moveFi(self):
+        self.thetaTotal += self.moveSpeed
+        
+        if(self.firstPassMove):
+            self.firstPassMove = False
+
+            for x in range(3):
+                for y in range(3):
+                    self.orgTheta.append((self.cubeRot[x][y][2][0], self.cubeRot[x][y][2][1], self.cubeRot[x][y][2][2]))
+
+        for x in range(3):
+            for y in range(3):
+                self.cubeRot[x][y][2] = (self.orgTheta[y+3*x][0], self.orgTheta[y+3*x][1], self.orgTheta[y+3*x][2]+self.thetaTotal, 0.0, 0.0, -1.0)
+
+        if(self.thetaTotal >= 90):
+            self.currentMove = -2
+            self.firstPassMove = True
+            self.orgTheta = []
+
+            for i in range(3):
+            #goes opposite of direction
+                self.cycleStickers((CubeRenderer.F, 0, 0),(CubeRenderer.F, 2, 0),(CubeRenderer.F, 2, 2),(CubeRenderer.F, 0, 2)) #F corners
+                self.cycleStickers((CubeRenderer.F, 1, 0),(CubeRenderer.F, 2, 1),(CubeRenderer.F, 1, 2),(CubeRenderer.F, 0, 1)) #F edges
+                self.cycleStickers((CubeRenderer.U, 2, 1),(CubeRenderer.L, 2, 1),(CubeRenderer.D, 2, 1),(CubeRenderer.R, 2, 1)) #F Side Edges
+                self.cycleStickers((CubeRenderer.U, 2, 0),(CubeRenderer.L, 2, 0),(CubeRenderer.D, 2, 0),(CubeRenderer.R, 2, 0)) #F Side CL
+                self.cycleStickers((CubeRenderer.U, 2, 2),(CubeRenderer.L, 2, 2),(CubeRenderer.D, 2, 2),(CubeRenderer.R, 2, 2)) #F Side CR
+
+    def moveDi(self):
+            self.thetaTotal += self.moveSpeed
+            
+            if(self.firstPassMove):
+                self.firstPassMove = False
+
+                for x in range(3):
+                    for z in range(3):
+                        self.orgTheta.append((self.cubeRot[x][0][z][0], self.cubeRot[x][0][z][1], self.cubeRot[x][0][z][2]))
+
+            for x in range(3):
+                for z in range(3):
+                    self.cubeRot[x][0][z] = (self.orgTheta[z+3*x][0], self.orgTheta[z+3*x][1]-self.thetaTotal, self.orgTheta[z+3*x][2], 0.0, 1.0, 0.0)
+
+            if(self.thetaTotal >= 90):
+                self.currentMove = -2
+                self.firstPassMove = True
+                self.orgTheta = []
+
+                for i in range(3):
+                    #goes opposite of direction
+                    self.cycleStickers((CubeRenderer.D, 0, 0),(CubeRenderer.D, 2, 0),(CubeRenderer.D, 2, 2),(CubeRenderer.D, 0, 2)) #D corners
+                    self.cycleStickers((CubeRenderer.D, 1, 0),(CubeRenderer.D, 2, 1),(CubeRenderer.D, 1, 2),(CubeRenderer.D, 0, 1)) #D edges
+                    self.cycleStickers((CubeRenderer.R, 1, 2),(CubeRenderer.F, 2, 1),(CubeRenderer.L, 1, 0),(CubeRenderer.B, 0, 1)) #D Side Edges
+                    self.cycleStickers((CubeRenderer.R, 2, 2),(CubeRenderer.F, 2, 0),(CubeRenderer.L, 0, 0),(CubeRenderer.B, 0, 2)) #D Side Edges
+                    self.cycleStickers((CubeRenderer.R, 0, 2),(CubeRenderer.F, 2, 2),(CubeRenderer.L, 2, 0),(CubeRenderer.B, 0, 0)) #D Side CR
+
+    def moveLi(self):
+        self.thetaTotal += self.moveSpeed
+        
+        if(self.firstPassMove):
+            self.firstPassMove = False
+
+            for y in range(3):
+                for z in range(3):
+                    self.orgTheta.append((self.cubeRot[0][y][z][0], self.cubeRot[0][y][z][1], self.cubeRot[0][y][z][2]))
+
+        for y in range(3):
+            for z in range(3):
+                self.cubeRot[0][y][z] = (self.orgTheta[z+3*y][0]-self.thetaTotal, self.orgTheta[z+3*y][1], self.orgTheta[z+3*y][2], 1.0, 0.0, 0.0)
+
+        if(self.thetaTotal >= 90):
+            self.currentMove = -2
+            self.firstPassMove = True
+            self.orgTheta = []
+
+            for m in range(3):
+                #goes opposite of direction
+                self.cycleStickers((CubeRenderer.L, 0, 0),(CubeRenderer.L, 2, 0),(CubeRenderer.L, 2, 2),(CubeRenderer.L, 0, 2)) #D corners
+                self.cycleStickers((CubeRenderer.L, 1, 0),(CubeRenderer.L, 2, 1),(CubeRenderer.L, 1, 2),(CubeRenderer.L, 0, 1)) #D edges
+                for i in range(3): #quick fix
+                    self.cycleStickers((CubeRenderer.U, 1, 0),(CubeRenderer.F, 1, 0),(CubeRenderer.D, 1, 2),(CubeRenderer.B, 1, 0)) #D Side Edges
+                    self.cycleStickers((CubeRenderer.U, 0, 0),(CubeRenderer.F, 0, 0),(CubeRenderer.D, 2, 2),(CubeRenderer.B, 0, 0)) #D Side Edges
+                    self.cycleStickers((CubeRenderer.U, 2, 0),(CubeRenderer.F, 2, 0),(CubeRenderer.D, 0, 2),(CubeRenderer.B, 2, 0)) #D Side CR
+
+    def moveBi(self):
+        self.thetaTotal += self.moveSpeed
+        
+        if(self.firstPassMove):
+            self.firstPassMove = False
+
+            for x in range(3):
+                for y in range(3):
+                    self.orgTheta.append((self.cubeRot[x][y][0][0], self.cubeRot[x][y][0][1], self.cubeRot[x][y][0][2]))
+
+        for x in range(3):
+            for y in range(3):
+                self.cubeRot[x][y][0] = (self.orgTheta[y+3*x][0], self.orgTheta[y+3*x][1], self.orgTheta[y+3*x][2]-self.thetaTotal, 0.0, 0.0, 1.0)
+
+        if(self.thetaTotal >= 90):
+            self.currentMove = -2
+            self.firstPassMove = True
+            self.orgTheta = []
+
+            for i in range(3):
+                # #goes opposite of direction
+                self.cycleStickers((CubeRenderer.B, 0, 0),(CubeRenderer.B, 2, 0),(CubeRenderer.B, 2, 2),(CubeRenderer.B, 0, 2)) #D corners
+                self.cycleStickers((CubeRenderer.B, 1, 0),(CubeRenderer.B, 2, 1),(CubeRenderer.B, 1, 2),(CubeRenderer.B, 0, 1)) #D edges
+                self.cycleStickers((CubeRenderer.L, 0, 1),(CubeRenderer.U, 0, 1),(CubeRenderer.R, 0, 1),(CubeRenderer.D, 0, 1)) #D Side Edges
+                self.cycleStickers((CubeRenderer.L, 0, 0),(CubeRenderer.U, 0, 0),(CubeRenderer.R, 0, 0),(CubeRenderer.D, 0, 0)) #D Side Edges
+                self.cycleStickers((CubeRenderer.L, 0, 2),(CubeRenderer.U, 0, 2),(CubeRenderer.R, 0, 2),(CubeRenderer.D, 0, 2)) #D Side Edges
