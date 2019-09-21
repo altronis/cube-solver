@@ -6,6 +6,9 @@ D = 3
 L = 4
 B = 5
 
+# 6 Faces
+faces = ["U", "R", "F", "D", "L", "B"]
+
 # 12 Edge objects
 edges = ["UR", "UF", "UL", "UB", "DR", "DF", "DL", "DB", "FR", "FL", "BR", "BL"]
 

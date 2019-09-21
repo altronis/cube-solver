@@ -4,19 +4,49 @@ from constants import *
 class Edge:
     # Slot = 2-tuple
     # Piece = 2-tuple
+    def eo(self):  # Edge orientation property for top layer
+        if self.piece[0] == 0:
+            return 0
+        return 1
+
     def __init__(self, slot, indices):
         self.slot = slot
         self.piece = slot
         self.indices = indices
+
+    def __str__(self):
+        return faces[self.piece[0]] + faces[self.piece[1]]
+
+    def __hash__(self):
+        return hash(self.piece)
+
+    def __eq__(self, other):
+        return self.piece == other.piece or self.piece == flip(other.piece, True)
 
 
 class Corner:
     # Slot = 3-tuple
     # Piece = 3-tuple
+    def co(self):  # Corner orientation property
+        if self.piece[0] == 0:
+            return 0
+        if self.piece[1] == 0:
+            return 1
+        return 2
+
     def __init__(self, slot, indices):
         self.slot = slot
         self.piece = slot
         self.indices = indices
+
+    def __str__(self):
+        return faces[self.piece[0]] + faces[self.piece[1]] + faces[self.piece[2]]
+
+    def __hash__(self):
+        return hash(self.piece)
+
+    def __eq__(self, other):
+        return self.piece == other.piece or self.piece == twist(other.piece, True, 1) or self.piece == twist(other.piece, True, -1)
 
 
 class Move:
@@ -33,6 +63,9 @@ class Move:
         self.twist = False
         self.name = ""
 
+    def __str__(self):
+        return self.name
+
 
 # Example Input: "URUFULUB"  (String)
 # Example Output: "[self.UR, self.UF, self.UL, self.UB]"  (String)
@@ -46,7 +79,7 @@ def build_string_from_list(string):
     return result
 
 
-# Example Input: (cube.UR, 1), cube.F
+# Example Input: (cube.UF, 1), cube.F
 # Example Output: (cube.FR, 0)
 def move_piece(piece, move):
     slot = piece[0]  # The edge or corner object
@@ -55,38 +88,50 @@ def move_piece(piece, move):
     orientation_state = piece[1]  # The current orientation state of the piece
     new_orientation_state = piece[1]  # The new orientation state after the move
 
-    if slot in move.edge_cycle:
-        # The slot is affected by the move
-        slot_index = move.edge_cycle.index(slot)
-        new_slot = move.edge_cycle[slot_index - 1]
-        if move.flip:
-            new_orientation_state = 1 - orientation_state
+    for i in range(move.turns):
+        if slot in move.edge_cycle:
+            # The slot is affected by the move
+            slot_index = move.edge_cycle.index(slot)
+            new_slot = move.edge_cycle[(slot_index + 1) % 4]
+            if move.flip:
+                new_orientation_state = 1 - orientation_state
 
-    elif slot in move.corner_cycle:
-        slot_index = move.corner_cycle.index(slot)
-        new_slot = move.corner_cycle[slot_index - 1]
-        if move.twist:
-            if slot.slot[0] == new_slot.slot[0]:
-                if new_orientation_state == 0:
-                    new_orientation_state = 2
+        elif slot in move.corner_cycle:
+            slot_index = move.corner_cycle.index(slot)
+            new_slot = move.corner_cycle[(slot_index + 1) % 4]
+            if move.twist:
+                if slot.slot[0] == new_slot.slot[0]:
+                    if new_orientation_state == 0:
+                        new_orientation_state = 2
+                    else:
+                        new_orientation_state -= 1
                 else:
-                    new_orientation_state -= 1
-            else:
-                if new_orientation_state == 2:
-                    new_orientation_state = 0
-                else:
-                    new_orientation_state += 1
+                    if new_orientation_state == 2:
+                        new_orientation_state = 0
+                    else:
+                        new_orientation_state += 1
+
+        slot = new_slot
+        orientation_state = new_orientation_state
 
     return new_slot, new_orientation_state
 
 
+# Flips an edge.
 def flip(t, f):
+    if len(t) > 2:
+        return t
+
     if f:
         return t[1], t[0]
     return t
 
 
+# Twists a corner.
 def twist(t, tw, twist_amt):
+    if len(t) < 3:
+        return t
+
     if tw:
         if twist_amt == 1:
             # Twist counterclockwise
@@ -95,6 +140,15 @@ def twist(t, tw, twist_amt):
             # Twist clockwise
             return t[1], t[2], t[0]
     return t
+
+
+# Turns a list of move objects into a string.
+def stringify(list_moves):
+    result = ""
+    for m in list_moves:
+        result += str(m) + " "
+
+    return result
 
 
 class Cube:
@@ -140,8 +194,13 @@ class Cube:
     # edge and corner objects.
     # move: a move object
     def apply_move(self, move):
-        self.cycle_edges(move.edge_cycle, move.flip)
-        self.cycle_corners(move.corner_cycle, move.twist)
+        for i in range(move.turns):
+            self.cycle_edges(move.edge_cycle, move.flip)
+            self.cycle_corners(move.corner_cycle, move.twist)
+
+    def apply_list_of_moves(self, list_moves):
+        for m in list_moves:
+            self.apply_move(m)
 
     # Given a slots list of 4 edges, cycles the piece variables of the objects in the list.
     # slots: list of 4 edges
@@ -155,14 +214,67 @@ class Cube:
     # Given a slots list of 4 edges, cycles the piece variables of the objects in the list.
     # slots: list of 4 edges
     def cycle_corners(self, slots, t):
-        temp = slots[-1].piece  # Store the piece variable of the last object in the list
+        temp = slots[-1].piece
         for i in range(3, 0, -1):
-            if slots[i].piece[0] == slots[i - 1].piece[0]:
+            if slots[i].slot[0] == slots[i - 1].slot[0]:
                 slots[i].piece = twist(slots[i - 1].piece, t, -1)
             else:
                 slots[i].piece = twist(slots[i - 1].piece, t, 1)
 
-        if slots[0].piece[0] == temp[0]:
+        if slots[0].slot[0] == slots[-1].slot[0]:
             slots[0].piece = twist(temp, t, -1)
         else:
             slots[0].piece = twist(temp, t, 1)
+
+    # Invert a single move.
+    def invert_move(self, move):
+        inverted_name = move.name
+        if len(move.name) == 1:
+            inverted_name = move.name + "i"
+        elif move.name[-1] == 'i':
+            inverted_name = move.name[0]
+
+        return eval("self.%s" % inverted_name)
+
+    # Double a single move.
+    def double_move(self, move):
+        doubled_name = move.name + "2"
+        return eval("self.%s" % doubled_name)
+
+    # Inverts a list of moves.
+    def invert(self, list_moves):
+        result = []
+        for move in list_moves[::-1]:
+            result.append(self.invert_move(move))
+
+        return result
+
+    def all_turn(self, move):
+        return [move, self.invert_move(move), self.double_move(move)]
+
+    # Truncates a list of moves (removes unnecessary moves)
+    def truncate(self, list_moves):
+        new_list = self.truncate_helper(list_moves)
+        if len(list_moves) == len(new_list):
+            return new_list
+        return self.truncate(new_list)
+
+    def truncate_helper(self, list_moves):
+        if len(list_moves) <= 1:
+            return list_moves
+
+        if list_moves[0].name[0] == list_moves[1].name[0]:
+            total_turns = (list_moves[0].turns + list_moves[1].turns) % 4
+            if total_turns == 0:
+                return self.truncate_helper(list_moves[2:])
+
+            new_index = faces.index(list_moves[0].name[0]) * 3 + total_turns - 1
+            new_move = eval("self.%s" % moves[new_index])
+            list_moves[1] = new_move
+            return self.truncate_helper(list_moves[1:])
+        else:
+            return [list_moves[0]] + self.truncate_helper(list_moves[1:])
+
+    # Generate conjugates given moves A and B.
+    def generate_conjugate(self, move_a, move_b):
+        return [[move_a, move_b, self.invert_move(move_a)], [move_a, self.double_move(move_b), self.invert_move(move_a)], [move_a, self.invert_move(move_b), self.invert_move(move_a)]]
