@@ -6,6 +6,19 @@ import OpenGL.GL as gl
 
 class CubeRenderer(QOpenGLWidget):
 
+    U = 0
+    R = 1
+    F = 2
+    D = 3
+    L = 4
+    B = 5
+    Ui = 6
+    Ri = 7
+    Fi = 8
+    Di = 9
+    Li = 10
+    Bi = 11
+
     def __init__(self, stickers):
         super(CubeRenderer, self).__init__(parent=None)
 
@@ -13,30 +26,108 @@ class CubeRenderer(QOpenGLWidget):
         self.yRot = 0
         self.zRot = 0
 
+        self.currentMove = -1
+        self.moveTheta = 0
+        self.moveSpeed = 0.01
+
         self.cubes = []
+        for x in range(3):
+            self.cubes.append([])
+            for y in range(3):
+                self.cubes[x].append([0]*3)
 
-        self.cubeColors = [[[[]]*3]*3]*3
 
-        print(len(self.cubeColors))
-        print(len(self.cubeColors[0]))
-        print(len(self.cubeColors[0][0]))
-        print(len(self.cubeColors[0][0][0]))
 
-        self.initCubeColors(stickers)
+
+        self.cubeColors = self.initCubeColors(stickers)
 
 
         timer = QTimer(self)
-        timer.timeout.connect(self.advanceGears)
+        timer.timeout.connect(self.updatePosition)
         timer.start(20)
 
-    def initCubeColors(self, stickers):
-        for x in range(len(self.cubeColors)):
-            for y in range(len(self.cubeColors[x])):
-                for z in range(len(self.cubeColors[x][y])):
-                    for _ in range(6):
-                        self.cubeColors[x][y][z].append((0.0,0.0,0.0)) #black
 
-        
+    def initCubeColors(self, stickers):
+
+        colors = []
+        for x in range(3):
+            colors.append([])
+            for y in range(3):
+                colors[x].append([])
+                for z in range(3):
+                    colors[x][y].append([])
+                    for _ in range(6):
+                        colors[x][y][z].append((0,0,0)) #black
+
+        colors[0][2][0][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][0][0]);
+        colors[1][2][0][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][0][1]);
+        colors[2][2][0][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][0][2]);
+
+        colors[0][2][1][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][1][0]);
+        colors[1][2][1][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][1][1]);
+        colors[2][2][1][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][1][2]);
+
+        colors[0][2][2][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][2][0]);
+        colors[1][2][2][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][2][1]);
+        colors[2][2][2][CubeRenderer.U] = self.getColorTuple(stickers[CubeRenderer.U][2][2]);
+
+        for y in range(2, -1, -1):
+            for z in range(3):
+                colors[2][y][z][CubeRenderer.R] = self.getColorTuple(stickers[CubeRenderer.R][z][2-y]);
+
+        for y in range(2, -1, -1):
+            for x in range(3):
+                colors[x][2-y][2][CubeRenderer.F] = self.getColorTuple(stickers[CubeRenderer.F][y][x]);
+
+        colors[2][0][0][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][0][0]);
+        colors[1][0][0][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][0][1]);
+        colors[0][0][0][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][0][2]);
+        colors[2][0][1][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][1][0]);
+        colors[1][0][1][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][1][1]);
+        colors[0][0][1][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][1][2]);
+        colors[2][0][2][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][2][0]);
+        colors[1][0][2][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][2][1]);
+        colors[0][0][2][CubeRenderer.D] = self.getColorTuple(stickers[CubeRenderer.D][2][2]);
+
+        colors[0][0][0][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][0][0]);
+        colors[0][1][0][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][0][1]);
+        colors[0][2][0][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][0][2]);
+        colors[0][0][1][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][1][0]);
+        colors[0][1][1][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][1][1]);
+        colors[0][2][1][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][1][2]);
+        colors[0][0][2][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][2][0]);
+        colors[0][1][2][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][2][1]);
+        colors[0][2][2][CubeRenderer.L] = self.getColorTuple(stickers[CubeRenderer.L][2][2]);
+
+        colors[0][0][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][0][0]);
+        colors[1][0][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][0][1]);
+        colors[2][0][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][0][2]);
+        colors[0][1][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][1][0]);
+        colors[1][1][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][1][1]);
+        colors[2][1][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][1][2]);
+        colors[0][2][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][2][0]);
+        colors[1][2][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][2][1]);
+        colors[2][2][0][CubeRenderer.B] = self.getColorTuple(stickers[CubeRenderer.B][2][2]);
+
+        return colors
+
+
+
+    def getColorTuple(self, face):
+        if(face == CubeRenderer.U):
+            return (255/255, 255/255, 255/255)#white
+        elif(face == CubeRenderer.R):
+            return (178/255, 34/255, 34/255)#red
+        elif(face == CubeRenderer.F):
+            return (0, 255/255, 0)#green
+        elif(face == CubeRenderer.D):
+            return (255/255, 255/255, 0)#yellow
+        elif(face == CubeRenderer.L):
+            return (255/255, 103/255, 0)#orange
+        elif(face == CubeRenderer.B):
+            return (0, 0, 255/255)#blue
+
+        return (0,0,0)
 
     def setXRotation(self, angle):
         # self.normalizeAngle(angle)
@@ -64,16 +155,11 @@ class CubeRenderer(QOpenGLWidget):
 
     def initializeGL(self):
 
-        # print(len(self.cubeColors))
-        # print(len(self.cubeColors[0]))
-        # print(len(self.cubeColors[0][0]))
-        # print(len(self.cubeColors[0][0][0]))
-
-
         for x in range(-1, 2):
             for y in range(-1, 2):
                  for z in range(-1, 2):
-                    self.cubes.append(self.makeCube(x*1.1, y*1.1, z*1.1, 1, self.cubeColors[x+1][y+1][z+1]))
+                    # self.cubes.append(self.makeCube(x*1.1, y*1.1, z*1.1, 1, self.cubeColors[x+1][y+1][z+1]))
+                    self.cubes[x+1][y+1][z+1] = self.makeCube(x*1.1, y*1.1, z*1.1, 1, self.cubeColors[x+1][y+1][z+1])
 
         gl.glEnable(gl.GL_NORMALIZE)
         gl.glEnable(gl.GL_DEPTH_TEST);  
@@ -90,9 +176,15 @@ class CubeRenderer(QOpenGLWidget):
 
         
         # self.drawCube(cube, 0.0, 0.0, 0.0, self.cube1Rot / 16.0)
-        for cube in self.cubes:
-            self.drawCube(cube, 0.0, 0.0, 0.0, 0 / 16.0)
+
+        # for cube in self.cubes:
+        #     self.drawCube(cube, 0.0, 0.0, 0.0, 0 / 16.0)
                                 #dx,  dy,  dz, angle
+
+        for x in range(3):
+            for y in range(3):
+                for z in range(3):
+                    self.drawCube(self.cubes[x][y][z], 0.0, 0.0, 0.0, 0.0)
 
         gl.glPopMatrix()
 
@@ -107,7 +199,6 @@ class CubeRenderer(QOpenGLWidget):
         gl.glMatrixMode(gl.GL_PROJECTION)
         gl.glLoadIdentity()
         gl.glFrustum(-1.0, +1.0, -1.0, 1.0, 5.0, 60.0)
-        # gl.glOrtho(-5.0, +5.0, -5.0, 5.0, 0.0, 100.0)
         gl.glMatrixMode(gl.GL_MODELVIEW)
         gl.glLoadIdentity()
         gl.glTranslated(0.0, 0.0, -40.0)
@@ -126,9 +217,9 @@ class CubeRenderer(QOpenGLWidget):
 
         self.lastPos = event.pos()
 
-    def advanceGears(self):
-        # self.gear1Rot += 2 * 16
-        self.update()
+    # def advanceGears(self):
+    #     # self.gear1Rot += 2 * 16
+    #     self.update()
 
     def xRotation(self):
         return self.xRot
@@ -168,14 +259,14 @@ class CubeRenderer(QOpenGLWidget):
         gl.glEnd()
 
         # front face
-        # gl.glColor3f(0.0,1.0,1.0)
+        # gl.glColor3f(1.0,0.0,1.0)
         tup = colors[2];
-        gl.glColor3f(tup[0], tup[1], tup[2])
+        gl.glColor3f(tup[0], tup[1], tup[2])        
         gl.glBegin(gl.GL_QUAD_STRIP)
-        gl.glVertex3d(x-size, y-size, z-size)
-        gl.glVertex3d(x-size, y+size, z-size)
-        gl.glVertex3d(x+size, y-size, z-size)
-        gl.glVertex3d(x+size, y+size, z-size)
+        gl.glVertex3d(x-size, y-size, z+size)
+        gl.glVertex3d(x-size, y+size, z+size)
+        gl.glVertex3d(x+size, y-size, z+size)
+        gl.glVertex3d(x+size, y+size, z+size)
         gl.glEnd()
 
         # down face
@@ -201,14 +292,14 @@ class CubeRenderer(QOpenGLWidget):
         gl.glEnd()
 
         # back face
-        # gl.glColor3f(1.0,0.0,1.0)
+        gl.glColor3f(0.0,1.0,1.0)
         tup = colors[5];
-        gl.glColor3f(tup[0], tup[1], tup[2])        
+        gl.glColor3f(tup[0], tup[1], tup[2])
         gl.glBegin(gl.GL_QUAD_STRIP)
-        gl.glVertex3d(x-size, y-size, z+size)
-        gl.glVertex3d(x-size, y+size, z+size)
-        gl.glVertex3d(x+size, y-size, z+size)
-        gl.glVertex3d(x+size, y+size, z+size)
+        gl.glVertex3d(x-size, y-size, z-size)
+        gl.glVertex3d(x-size, y+size, z-size)
+        gl.glVertex3d(x+size, y-size, z-size)
+        gl.glVertex3d(x+size, y+size, z-size)
         gl.glEnd()
 
         gl.glEndList()
@@ -228,3 +319,32 @@ class CubeRenderer(QOpenGLWidget):
         while (angle > 360):
             angle -= 360
         return angle
+
+    def updatePosition(self):
+        if self.currentMove == CubeRenderer.U:
+            moveU()
+        elif self.currentMove == CubeRenderer.R:
+            pass
+        elif self.currentMove == CubeRenderer.F:
+            pass
+        elif self.currentMove == CubeRenderer.D:
+            pass
+        elif self.currentMove == CubeRenderer.L:
+            pass
+        elif self.currentMove == CubeRenderer.B:
+            pass
+        else:
+            return
+
+        self.update()
+
+
+
+
+    def moveU():
+        self.moveTheta += moveSpeed
+        if(self.moveTheta > 90):
+            self.moveTheta = 90
+            self.currentMove = -1
+
+
