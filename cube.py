@@ -77,6 +77,25 @@ def move_piece(piece, move):
                 else:
                     new_orientation_state += 1
 
+    return new_slot, new_orientation_state
+
+
+def flip(t, f):
+    if f:
+        return t[1], t[0]
+    return t
+
+
+def twist(t, tw, twist_amt):
+    if tw:
+        if twist_amt == 1:
+            # Twist counterclockwise
+            return t[2], t[0], t[1]
+        else:
+            # Twist clockwise
+            return t[1], t[2], t[0]
+    return t
+
 
 class Cube:
     def __init__(self):  # Constructor
@@ -121,19 +140,29 @@ class Cube:
     # edge and corner objects.
     # move: a move object
     def apply_move(self, move):
-        self.cycle(move.edge_cycle)
-        self.cycle(move.corner_cycle)
+        self.cycle_edges(move.edge_cycle, move.flip)
+        self.cycle_corners(move.corner_cycle, move.twist)
 
-    # Given a slots list of 4 edges and 4 corners, cycles the piece variables of the objects in the list.
-    # slots: list of 4 edges of 4 corners
-    def cycle(self, slots):
+    # Given a slots list of 4 edges, cycles the piece variables of the objects in the list.
+    # slots: list of 4 edges
+    def cycle_edges(self, slots, f):
         temp = slots[-1].piece  # Store the piece variable of the last object in the list
-        for i in range(3):
-            slots[i + 1].piece = slots[i].piece
+        for i in range(3, 0, -1):
+            slots[i].piece = flip(slots[i - 1].piece, f)
 
-        slots[0].piece = temp
+        slots[0].piece = flip(temp, f)
 
+    # Given a slots list of 4 edges, cycles the piece variables of the objects in the list.
+    # slots: list of 4 edges
+    def cycle_corners(self, slots, t):
+        temp = slots[-1].piece  # Store the piece variable of the last object in the list
+        for i in range(3, 0, -1):
+            if slots[i].piece[0] == slots[i - 1].piece[0]:
+                slots[i].piece = twist(slots[i - 1].piece, t, -1)
+            else:
+                slots[i].piece = twist(slots[i - 1].piece, t, 1)
 
-cube = Cube()
-
-x = 3
+        if slots[0].piece[0] == temp[0]:
+            slots[0].piece = twist(temp, t, -1)
+        else:
+            slots[0].piece = twist(temp, t, 1)
