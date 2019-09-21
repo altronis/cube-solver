@@ -1,6 +1,8 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
 import random
+import CubeRenderer
+
 
 class PyQtWindow(QMainWindow):
     def __init__(self):
@@ -191,95 +193,72 @@ class PyQtWindow(QMainWindow):
                 return "white"
             else:
                 return "none"
+
         # generates the array of colors corresponding to the user's input
         def submitLayout():
             # color of each cube element edge
             # GOES IN U, R, F, D, L, B ROW DOMINANT ORDER
             colorsArray = [
-            [[getColor(self.U00), getColor(self.U01), getColor(self.U02)],
-             [getColor(self.U10), getColor(self.U11), getColor(self.U12)],
-             [getColor(self.U20), getColor(self.U21), getColor(self.U22)]],
-            [[getColor(self.R00), getColor(self.R01), getColor(self.R02)],
-             [getColor(self.R10), getColor(self.R11), getColor(self.R12)],
-             [getColor(self.R20), getColor(self.R21), getColor(self.R22)]],
-            [[getColor(self.F00), getColor(self.F01), getColor(self.F02)],
-             [getColor(self.F10), getColor(self.F11), getColor(self.F12)],
-             [getColor(self.F20), getColor(self.F21), getColor(self.F22)]],
-            [[getColor(self.D00), getColor(self.D01), getColor(self.D02)],
-             [getColor(self.D10), getColor(self.D11), getColor(self.D12)],
-             [getColor(self.D20), getColor(self.D21), getColor(self.D22)]],
-            [[getColor(self.L00), getColor(self.L01), getColor(self.L02)],
-             [getColor(self.L10), getColor(self.L11), getColor(self.L12)],
-             [getColor(self.L20), getColor(self.L21), getColor(self.L22)]],
-            [[getColor(self.B00), getColor(self.B01), getColor(self.B02)],
-             [getColor(self.B10), getColor(self.B11), getColor(self.B12)],
-             [getColor(self.B20), getColor(self.B21), getColor(self.B22)]]
+                [[getColor(self.U00), getColor(self.U01), getColor(self.U02)],
+                 [getColor(self.U10), getColor(self.U11), getColor(self.U12)],
+                 [getColor(self.U20), getColor(self.U21), getColor(self.U22)]],
+                [[getColor(self.R00), getColor(self.R01), getColor(self.R02)],
+                 [getColor(self.R10), getColor(self.R11), getColor(self.R12)],
+                 [getColor(self.R20), getColor(self.R21), getColor(self.R22)]],
+                [[getColor(self.F00), getColor(self.F01), getColor(self.F02)],
+                 [getColor(self.F10), getColor(self.F11), getColor(self.F12)],
+                 [getColor(self.F20), getColor(self.F21), getColor(self.F22)]],
+                [[getColor(self.D00), getColor(self.D01), getColor(self.D02)],
+                 [getColor(self.D10), getColor(self.D11), getColor(self.D12)],
+                 [getColor(self.D20), getColor(self.D21), getColor(self.D22)]],
+                [[getColor(self.L00), getColor(self.L01), getColor(self.L02)],
+                 [getColor(self.L10), getColor(self.L11), getColor(self.L12)],
+                 [getColor(self.L20), getColor(self.L21), getColor(self.L22)]],
+                [[getColor(self.B00), getColor(self.B01), getColor(self.B02)],
+                 [getColor(self.B10), getColor(self.B11), getColor(self.B12)],
+                 [getColor(self.B20), getColor(self.B21), getColor(self.B22)]]
             ]
+
+            U = 0
+            R = 1
+            F = 2
+            D = 3
+            L = 4
+            B = 5
+
+            # sticfrs = [
+            # [[R,L,D], [U,U,U], [U,U,U]],
+            # [[R,R,B], [L,F,R], [R,R,L]],
+            # [[R,L,D], [B,F,F], [D,F,F]],
+            # [[U,F,B], [D,R,U], [R,L,F]],
+            # [[U,R,F], [U,R,F], [U,B,F]],
+            # [[D,R,L], [U,R,F], [D,R,F]]
+            # ]
+
+            # stickers = [
+            # [[U, L, D], [L, U, D], [D, B, U]],
+            # [[R, U, B], [B, R, D], [F, R, U]],
+            # [[L, R, L], [D, F, F], [D, R, F]],
+            # [[U, B, B], [R, D, D], [R, U, R]],
+            # [[D, B, L], [F, L, F], [B, L, F]],
+            # [[L, U, R], [L, B, F], [B, U, F]]
+            # ]
+
+            stickers = [
+            [[U, U, U], [U, U, U], [U, U, U]],
+            [[R, R, R], [R, R, R], [R, R, R]],
+            [[F, F, F], [F, F, F], [F, F, F]],
+            [[D, D, D], [D, D, D], [D, D, D]],
+            [[L, L, L], [L, L, L], [L, L, L]],
+            [[B, B, B], [B, B, B], [B, B, B]]
+            ]
+
+            # run the renderer script
+            self.panel = CubeRenderer.CubeRenderer(stickers)
+
             return colorsArray
 
-        def randomizeCube():
-            colors = ["red", "orange", "yellow", "blue", "green", "white"]
-            self.L00.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L01.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L02.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L10.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L11.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L12.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L20.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L21.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.L22.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-
-            self.U00.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U01.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U02.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U10.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U11.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U12.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U20.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U21.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.U22.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-
-            self.R00.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R01.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R02.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R10.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R11.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R12.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R20.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R21.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.R22.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-
-            self.D00.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D01.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D02.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D10.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D11.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D12.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D20.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D21.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.D22.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-
-            self.B00.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B01.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B02.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B10.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B11.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B12.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B20.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B21.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.B22.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-
-            self.F00.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F01.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F02.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F10.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F11.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F12.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F20.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F21.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-            self.F22.setStyleSheet('background-color: ' + colors[random.randint(0, 5)])
-
-
         app.exec_()
+
 
 PyQtWindow()

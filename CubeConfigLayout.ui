@@ -1124,7 +1124,7 @@
       <x>880</x>
       <y>580</y>
       <width>191</width>
-      <height>31</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -1134,8 +1134,8 @@
    <widget class="QPushButton" name="randomButton">
     <property name="geometry">
      <rect>
-      <x>742</x>
-      <y>577</y>
+      <x>740</x>
+      <y>580</y>
       <width>131</width>
       <height>41</height>
      </rect>
