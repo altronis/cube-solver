@@ -19,7 +19,7 @@ class MainWindow(QMainWindow):
         L = 4
         B = 5
 
-        # stickers = [
+        # sticfrs = [
         # [[R,L,D], [U,U,U], [U,U,U]],
         # [[R,R,B], [L,F,R], [R,R,L]],
         # [[R,L,D], [B,F,F], [D,F,F]],
@@ -28,14 +28,25 @@ class MainWindow(QMainWindow):
         # [[D,R,L], [U,R,F], [D,R,F]]
         # ]
 
+        # stickers = [
+        # [[U, L, D], [L, U, D], [D, B, U]], 
+        # [[R, U, B], [B, R, D], [F, R, U]], 
+        # [[L, R, L], [D, F, F], [D, R, F]], 
+        # [[U, B, B], [R, D, D], [R, U, R]], 
+        # [[D, B, L], [F, L, F], [B, L, F]], 
+        # [[L, U, R], [L, B, F], [B, U, F]]
+        # ]
+
         stickers = [
-        [[U, L, D], [L, U, D], [D, B, U]], 
-        [[R, U, B], [B, R, D], [F, R, U]], 
-        [[L, R, L], [D, F, F], [D, R, F]], 
-        [[U, B, B], [R, D, D], [R, U, R]], 
-        [[D, B, L], [F, L, F], [B, L, F]], 
-        [[L, U, R], [L, B, F], [B, U, F]]
+        [[U, U, U], [U, U, U], [U, U, U]], 
+        [[R, R, R], [R, R, R], [R, R, R]], 
+        [[F, F, F], [F, F, F], [F, F, F]], 
+        [[D, D, D], [D, D, D], [D, D, D]], 
+        [[L, L, L], [L, L, L], [L, L, L]], 
+        [[B, B, B], [B, B, B], [B, B, B]]
         ]
+
+
 
 
         self.glWidget = CubeRenderer(stickers)
