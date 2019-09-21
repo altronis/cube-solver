@@ -229,9 +229,10 @@ def solve_EO(cube):
     if cycle_number >= 0:
         solution += [cube.U] * cycle_number + OPP_EDGES
 
-    if orientations == [0, 0, 0, 0]:
+    if orientations == [1, 1, 1, 1]:
         solution += ADJ_EDGES + [cube.U] + OPP_EDGES
 
+    cube.apply_list_of_moves(solution)
     return cube.truncate(solution)
 
 
@@ -276,5 +277,140 @@ def solve_CO(cube):
     if cycle_number >= 0:
         solution += [cube.U] * cycle_number + Pi
 
+    cube.apply_list_of_moves(solution)
     return cube.truncate(solution)
 
+
+def solve_CP_1(cube):
+    slot_to_solve = (cube.ULF, 0)
+    moveset = cube.all_turn(cube.U)
+    max_length = 4
+
+    solution = solve_corner(cube, slot_to_solve, moveset, max_length)
+    cube.apply_list_of_moves(solution)
+
+    output_message = ""
+    return solution
+
+
+def solve_CP_2(cube):
+    A_PERM = [cube.Ri, cube.F, cube.Ri, cube.B2, cube.R, cube.Fi, cube.Ri, cube.B2, cube.R2]
+
+    slot_to_solve = (cube.UFR, 0)
+    moveset = [A_PERM, cube.invert(A_PERM)]
+    max_length = 3
+
+    solution = solve_corner(cube, slot_to_solve, moveset, max_length)
+    cube.apply_list_of_moves(solution)
+
+    output_message = ""
+    return solution
+
+
+def solve_CP_3(cube):
+    R_PERM = [cube.Ri, cube.U2, cube.R, cube.U2, cube.Ri, cube.F, cube.R, cube.U, cube.Ri, cube.Ui, cube.Ri, cube.F, cube.R2]
+
+    slot_to_solve = (cube.UFR, 0)
+    moveset = [R_PERM]
+    max_length = 2
+
+    solution = solve_corner(cube, slot_to_solve, moveset, max_length)
+    cube.apply_list_of_moves(solution)
+
+    output_message = ""
+    return solution
+
+
+def solve_EP_1(cube):
+    U_PERM = [cube.R, cube.Ui, cube.R, cube.U, cube.R, cube.U, cube.R, cube.Ui, cube.Ri, cube.Ui, cube.R2]
+
+    slot_to_solve = (cube.UB, 0)
+    moveset = [U_PERM, cube.invert(U_PERM), [cube.U] + U_PERM + [cube.Ui], [cube.Ui] + U_PERM + [cube.U], [cube.Ui] + cube.invert(U_PERM) + [cube.U]]
+    max_length = 4
+
+    solution = solve_edge(cube, slot_to_solve, moveset, max_length)
+    cube.apply_list_of_moves(solution)
+
+    output_message = ""
+    return solution
+
+
+def solve_EP_2(cube):
+    U_PERM = [cube.R, cube.Ui, cube.R, cube.U, cube.R, cube.U, cube.R, cube.Ui, cube.Ri, cube.Ui, cube.R2]
+
+    slot_to_solve = (cube.UF, 0)
+    moveset = [U_PERM, cube.invert(U_PERM)]
+    max_length = 3
+
+    solution = solve_edge(cube, slot_to_solve, moveset, max_length)
+    cube.apply_list_of_moves(solution)
+
+    output_message = ""
+    return solution
+
+
+def to_matrix(cube):
+    matrix = []
+    for i in range(6):
+        matrix.append([[0, 0, 0]] * 3)
+
+    for e in edges:
+        for i in range(2):
+            exec_string = "matrix["
+            exec_string += e[i] + "]"
+            index = eval("cube.%s.indices[i]" % e)
+            exec_string += "[%d][%d]" % (index[0], index[1])
+            exec_string += " = %d" % (eval("cube.%s.piece[i]" % e))
+            exec(exec_string)
+
+    for c in corners:
+        for i in range(3):
+            exec_string = "matrix["
+            exec_string += c[i] + "]"
+            index = eval("cube.%s.indices[i]" % c)
+            exec_string += "[%d][%d]" % (index[0], index[1])
+            exec_string += " = %d" % (eval("cube.%s.piece[i]" % c))
+            exec(exec_string)
+    return matrix
+
+
+def to_cube(matrix):
+    cube = Cube()
+
+    for e in edges:
+        indices = []
+        for i in range(2):
+            exec_string = "cube.%s.indices" % e
+            exec_string += "[%d]" % i
+            index = eval(exec_string)
+
+            exec_string = "matrix"
+            exec_string += "[%d]" % eval("cube.%s.slot[%d]" % (e, i))
+            exec_string += "[%d]" % index[0]
+            exec_string += "[%d]" % index[1]
+
+            indices.append(eval(exec_string))
+        exec_string = "cube.%s.piece = indices[0], indices[1]" % e
+        exec(exec_string)
+
+
+    for c in corners:
+        indices = []
+        for i in range(3):
+            exec_string = "cube.%s.indices" % c
+            exec_string += "[%d]" % i
+            index = eval(exec_string)
+
+            exec_string = "matrix"
+            exec_string += "[%d]" % eval("cube.%s.slot[%d]" % (c, i))
+            exec_string += "[%d]" % index[0]
+            exec_string += "[%d]" % index[1]
+
+            indices.append(eval(exec_string))
+        exec_string = "cube.%s.piece = indices[0], indices[1], indices[2]" % c
+        exec(exec_string)
+    return cube
+
+
+cube = to_cube([[[4, 1, 4], [5, 0, 0], [2, 5, 1]], [[0, 2, 4], [1, 1, 3], [5, 2, 0]], [[1, 4, 3], [2, 2, 0], [2, 4, 2]], [[5, 3, 5], [4, 3, 5], [1, 0, 4]], [[0, 5, 2], [0, 4, 1], [0, 1, 3]], [[1, 2, 3], [3, 5, 4], [3, 3, 5]]])
+x = 3
