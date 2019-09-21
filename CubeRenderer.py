@@ -4,6 +4,8 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QM
 import OpenGL.GL as gl
 import math
 import keyboard
+from cube_driver import *
+import time
 
 
 class CubeRenderer(QOpenGLWidget):
@@ -23,6 +25,12 @@ class CubeRenderer(QOpenGLWidget):
 
     def __init__(self, stickers):
         super(CubeRenderer, self).__init__(parent=None)
+
+
+        self.solution = None
+        self.counter = 0
+        self.cube = Cube()
+        self.double_count = 0
 
         self.stickers = stickers
 
@@ -44,7 +52,7 @@ class CubeRenderer(QOpenGLWidget):
 
         self.currentMove = -1
         self.thetaTotal = 0
-        self.moveSpeed = 10.0
+        self.moveSpeed = 3.0
 
         self.cubeRot = []
         self.cubePos = []
@@ -399,8 +407,13 @@ class CubeRenderer(QOpenGLWidget):
       py = ynew + cy;
       return (px, py);
 
+    
 
     def updatePosition(self):
+        # time.sleep(0.25)
+
+
+
         if self.currentMove == -2:
 
             self.cubeColors = self.initCubeColors(self.stickers)
@@ -412,31 +425,74 @@ class CubeRenderer(QOpenGLWidget):
                         self.cubeRot[x+1][y+1][z+1] = (0.0, 0,0, 0,0, 0.0, 1.0, 0.0)
                         self.cubes[x+1][y+1][z+1] = self.makeCube(x*1.1, y*1.1, z*1.1, 0.5, self.cubeColors[x+1][y+1][z+1])
             self.currentMove = -1
+            return
+        
+        if(self.currentMove == -1):
+            self.counter += 1
+        else:
+            self.counter = 0
 
-        elif self.currentMove == CubeRenderer.U:
+
+        if self.solution == [] or self.solution is None or not self.counter % 10 == 0:
+            self.update()
+            return
+        else:
+            if self.currentMove == -1 and self.counter % 10 == 0:
+                if self.solution[0].turns == 2:
+                    self.currentMove = to_int(self.cube.halve_move(self.solution[0]))
+                    if not self.double_count % 2 == 0:
+                        self.solution = self.solution[1:]
+                    self.double_count += 1
+                else:
+                    self.currentMove = to_int(self.solution[0])
+                    self.solution = self.solution[1:]
+                return
+
+
+
+
+
+
+
+
+
+
+        if self.currentMove == CubeRenderer.U:
             self.moveU()
+            # self.update()
         elif self.currentMove == CubeRenderer.R:
             self.moveR()
+            # self.update()
         elif self.currentMove == CubeRenderer.F:
             self.moveF()
+            # self.update()
         elif self.currentMove == CubeRenderer.D:
             self.moveD()
+            # self.update()
         elif self.currentMove == CubeRenderer.L:
             self.moveL()
+            # self.update()
         elif self.currentMove == CubeRenderer.B:
             self.moveB()
+            # self.update()
         elif self.currentMove == CubeRenderer.Ui:
             self.moveUi()
+            # self.update()
         elif self.currentMove == CubeRenderer.Ri:
             self.moveRi()
+            # self.update()
         elif self.currentMove == CubeRenderer.Fi:
             self.moveFi()
+            # self.update()
         elif self.currentMove == CubeRenderer.Di:
             self.moveDi()
+            # self.update()
         elif self.currentMove == CubeRenderer.Li:
             self.moveLi()
+            # self.update()
         elif self.currentMove == CubeRenderer.Bi:
             self.moveBi()
+            # self.update()
         else:
             self.update()
             return

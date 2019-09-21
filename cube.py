@@ -142,6 +142,12 @@ def twist(t, tw, twist_amt):
     return t
 
 
+# Turns a move object into an integer.
+def to_int(move):
+    m = ["U", "R", "F", "D", "L", "B", "Ui", "Ri", "Fi", "Di", "Li", "Bi"]
+    return m.index(move.name)
+
+
 # Turns a list of move objects into a string.
 def stringify(list_moves):
     result = ""
@@ -240,6 +246,11 @@ class Cube:
     def double_move(self, move):
         doubled_name = move.name + "2"
         return eval("self.%s" % doubled_name)
+
+    # Halve a single move.
+    def halve_move(self, move):
+        halved_name = move.name[0]
+        return eval("self.%s" % halved_name)
 
     # Inverts a list of moves.
     def invert(self, list_moves):

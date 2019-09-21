@@ -6,19 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1460</width>
-    <height>859</height>
+    <width>791</width>
+    <height>671</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Cube Solver</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>40</y>
+      <x>50</x>
+      <y>30</y>
       <width>691</width>
       <height>491</height>
      </rect>
@@ -1088,8 +1088,8 @@
    <widget class="QComboBox" name="colorBox">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>580</y>
+      <x>50</x>
+      <y>570</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -1098,8 +1098,8 @@
    <widget class="QComboBox" name="EditColorBox">
     <property name="geometry">
      <rect>
-      <x>490</x>
-      <y>580</y>
+      <x>170</x>
+      <y>570</y>
       <width>121</width>
       <height>41</height>
      </rect>
@@ -1108,8 +1108,8 @@
    <widget class="QPushButton" name="clearButton">
     <property name="geometry">
      <rect>
-      <x>620</x>
-      <y>580</y>
+      <x>300</x>
+      <y>570</y>
       <width>111</width>
       <height>41</height>
      </rect>
@@ -1121,8 +1121,8 @@
    <widget class="QPushButton" name="submitButton">
     <property name="geometry">
      <rect>
-      <x>880</x>
-      <y>580</y>
+      <x>560</x>
+      <y>570</y>
       <width>191</width>
       <height>41</height>
      </rect>
@@ -1134,8 +1134,8 @@
    <widget class="QPushButton" name="randomButton">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>580</y>
+      <x>420</x>
+      <y>570</y>
       <width>131</width>
       <height>41</height>
      </rect>
@@ -1144,16 +1144,6 @@
      <string>Randomize</string>
     </property>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1460</width>
-     <height>26</height>
-    </rect>
-   </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

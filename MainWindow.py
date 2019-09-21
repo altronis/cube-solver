@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QS
 from CubeRenderer import CubeRenderer
 from PyQt5.QtCore import Qt
 import sys
+import keyboard
 
 # URFDLB
 
@@ -50,14 +51,9 @@ class MainWindow(QMainWindow):
 
 
         self.glWidget = CubeRenderer(stickers)
-
         self.glWidgetArea = QScrollArea()
         self.glWidgetArea.setWidget(self.glWidget)
         self.glWidgetArea.setWidgetResizable(True)
-        self.glWidgetArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.glWidgetArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.glWidgetArea.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
-        self.glWidgetArea.setMinimumSize(50, 50)
 
         centralLayout = QGridLayout()
         centralLayout.addWidget(self.glWidgetArea, 0, 0)
@@ -67,34 +63,40 @@ class MainWindow(QMainWindow):
         self.resize(600, 600)
         self.setFixedSize(600, 600)
 
-
-
     def keyPressEvent(self, e):
+        shift = keyboard.is_pressed('shift')
+
         if(self.glWidget.currentMove == -1):
             if e.key()==Qt.Key_U:
-                self.glWidget.currentMove = CubeRenderer.U;
+                if shift:
+                    self.glWidget.currentMove = CubeRenderer.Ui
+                else:
+                    self.glWidget.currentMove = CubeRenderer.U
             if e.key()==Qt.Key_D:
-                self.glWidget.currentMove = CubeRenderer.D;
+                if shift:
+                    self.glWidget.currentMove = CubeRenderer.Di
+                else:
+                    self.glWidget.currentMove = CubeRenderer.D
             if e.key()==Qt.Key_L:
-                self.glWidget.currentMove = CubeRenderer.L;
+                if shift:
+                    self.glWidget.currentMove = CubeRenderer.Li
+                else:
+                    self.glWidget.currentMove = CubeRenderer.L
             if e.key()==Qt.Key_R:
-                self.glWidget.currentMove = CubeRenderer.R;
+                if shift:
+                    self.glWidget.currentMove = CubeRenderer.Ri
+                else:
+                    self.glWidget.currentMove = CubeRenderer.R
             if e.key()==Qt.Key_F:
-                self.glWidget.currentMove = CubeRenderer.F;
+                if shift:
+                    self.glWidget.currentMove = CubeRenderer.Fi
+                else:
+                    self.glWidget.currentMove = CubeRenderer.F
             if e.key()==Qt.Key_B:
-                self.glWidget.currentMove = CubeRenderer.B;
-            if e.key()==Qt.Key_1:
-                self.glWidget.currentMove = CubeRenderer.Ui;
-            if e.key()==Qt.Key_2:
-                self.glWidget.currentMove = CubeRenderer.Di;
-            if e.key()==Qt.Key_3:
-                self.glWidget.currentMove = CubeRenderer.Li;
-            if e.key()==Qt.Key_4:
-                self.glWidget.currentMove = CubeRenderer.Ri;
-            if e.key()==Qt.Key_5:
-                self.glWidget.currentMove = CubeRenderer.Fi;
-            if e.key()==Qt.Key_6:
-                self.glWidget.currentMove = CubeRenderer.Bi;
+                if shift:
+                    self.glWidget.currentMove = CubeRenderer.Bi
+                else:
+                    self.glWidget.currentMove = CubeRenderer.B
 
 if __name__ == '__main__':
 

@@ -46,7 +46,7 @@ def solve_edge(cube, slot_to_solve, moveset, max_length):
         if edge.piece == slot_to_solve[0].slot:
             return cube.truncate(cube.invert(move_states[(edge, 0)]))
         elif edge.piece == flip(slot_to_solve[0].slot, True):
-            return cube.truncate(cube.invert(move_states[(edge, 1)]))
+        	return cube.truncate(cube.invert(move_states[(edge, 1)]))
 
 
 # Slot to solve: (corner_to_solve, orientation_state)
@@ -66,20 +66,22 @@ def solve_corner(cube, slot_to_solve, moveset, max_length):
 # Slots to solve: ((edge_to_solve, orientation_state), (corner_to_solve, orientation_state))
 def solve_pair(cube, slots_to_solve, moveset, max_length):
     move_states = generate_move_states([slots_to_solve], moveset, max_length)
+    edge_tuple = slots_to_solve[0]
+    corner_tuple = slots_to_solve[1]
     for c in corners:
         corner = eval("cube.%s" % c)
         if corner.piece == slots_to_solve[1][0].slot:
             corner_tuple = (corner, 0)
-        elif corner.piece == twist(slot_to_solve[1][0].slot, True, -1):
+        elif corner.piece == twist(slots_to_solve[1][0].slot, True, -1):
             corner_tuple = (corner, 2)
-        elif corner.piece == twist(slot_to_solve[1][0].slot, True, 1):
+        elif corner.piece == twist(slots_to_solve[1][0].slot, True, 1):
             corner_tuple = (corner, 1)
 
     for e in edges:
         edge = eval("cube.%s" % e)
         if edge.piece == slots_to_solve[0][0].slot:
             edge_tuple = (edge, 0)
-        elif edge.piece == flip(slot_to_solve[0][0].slot, True):
+        elif edge.piece == flip(slots_to_solve[0][0].slot, True):
             edge_tuple = (edge, 1)
 
     return cube.truncate(cube.invert(move_states[(edge_tuple, corner_tuple)]))
@@ -220,6 +222,7 @@ def solve_EO(cube):
 
     solution = []
     orientations = [cube.UB.eo(), cube.UR.eo(), cube.UF.eo(), cube.UL.eo()]
+    print(orientations)
 
     cycle_number = cycle_of(orientations, [0, 1, 1, 0])
     if cycle_number >= 0:
@@ -308,9 +311,9 @@ def solve_CP_2(cube):
 
 
 def solve_CP_3(cube):
-    R_PERM = [cube.Ri, cube.U2, cube.R, cube.U2, cube.Ri, cube.F, cube.R, cube.U, cube.Ri, cube.Ui, cube.Ri, cube.F, cube.R2]
+    R_PERM = [cube.Ri, cube.U2, cube.R, cube.U2, cube.Ri, cube.F, cube.R, cube.U, cube.Ri, cube.Ui, cube.Ri, cube.Fi, cube.R2, cube.Ui]
 
-    slot_to_solve = (cube.UFR, 0)
+    slot_to_solve = (cube.URB, 0)
     moveset = [R_PERM]
     max_length = 2
 
@@ -325,7 +328,7 @@ def solve_EP_1(cube):
     U_PERM = [cube.R, cube.Ui, cube.R, cube.U, cube.R, cube.U, cube.R, cube.Ui, cube.Ri, cube.Ui, cube.R2]
 
     slot_to_solve = (cube.UB, 0)
-    moveset = [U_PERM, cube.invert(U_PERM), [cube.U] + U_PERM + [cube.Ui], [cube.Ui] + U_PERM + [cube.U], [cube.Ui] + cube.invert(U_PERM) + [cube.U]]
+    moveset = [[cube.U] + U_PERM + [cube.Ui], [cube.Ui] + U_PERM + [cube.U], [cube.Ui] + cube.invert(U_PERM) + [cube.U], [cube.U] + cube.invert(U_PERM) + [cube.Ui]]
     max_length = 4
 
     solution = solve_edge(cube, slot_to_solve, moveset, max_length)
@@ -410,7 +413,3 @@ def to_cube(matrix):
         exec_string = "cube.%s.piece = indices[0], indices[1], indices[2]" % c
         exec(exec_string)
     return cube
-
-
-cube = to_cube([[[4, 1, 4], [5, 0, 0], [2, 5, 1]], [[0, 2, 4], [1, 1, 3], [5, 2, 0]], [[1, 4, 3], [2, 2, 0], [2, 4, 2]], [[5, 3, 5], [4, 3, 5], [1, 0, 4]], [[0, 5, 2], [0, 4, 1], [0, 1, 3]], [[1, 2, 3], [3, 5, 4], [3, 3, 5]]])
-x = 3
