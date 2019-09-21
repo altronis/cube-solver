@@ -2,6 +2,8 @@ import sys
 from PyQt5.QtCore import pyqtSignal, Qt, QTimer
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QMessageBox, QOpenGLWidget, QScrollArea, QSizePolicy, QSlider, QWidget)
 import OpenGL.GL as gl
+import math
+import keyboard
 
 
 class CubeRenderer(QOpenGLWidget):
@@ -22,29 +24,44 @@ class CubeRenderer(QOpenGLWidget):
     def __init__(self, stickers):
         super(CubeRenderer, self).__init__(parent=None)
 
+        self.stickers = stickers
+
         self.xRot = 0
         self.yRot = 0
         self.zRot = 0
 
-        self.currentMove = -1
-        self.moveTheta = 0
-        self.moveSpeed = 0.01
+        self.reset(self.stickers)
 
+        timer = QTimer(self)
+        timer.timeout.connect(self.updatePosition)
+        timer.start(20)
+
+    def reset(self, stickers):
+        self.firstPassMove = True
+        self.orgTheta = []
+
+
+
+        self.currentMove = -1
+        self.thetaTotal = 0
+        self.moveSpeed = 2.5
+
+        self.cubeRot = []
+        self.cubePos = []
         self.cubes = []
         for x in range(3):
             self.cubes.append([])
+            self.cubePos.append([])
+            self.cubeRot.append([])
             for y in range(3):
                 self.cubes[x].append([0]*3)
+                self.cubePos[x].append([0]*3)
+                self.cubeRot[x].append([0]*3)
 
 
 
 
         self.cubeColors = self.initCubeColors(stickers)
-
-
-        timer = QTimer(self)
-        timer.timeout.connect(self.updatePosition)
-        timer.start(20)
 
 
     def initCubeColors(self, stickers):
@@ -159,7 +176,9 @@ class CubeRenderer(QOpenGLWidget):
             for y in range(-1, 2):
                  for z in range(-1, 2):
                     # self.cubes.append(self.makeCube(x*1.1, y*1.1, z*1.1, 1, self.cubeColors[x+1][y+1][z+1]))
-                    self.cubes[x+1][y+1][z+1] = self.makeCube(x*1.1, y*1.1, z*1.1, 1, self.cubeColors[x+1][y+1][z+1])
+                    self.cubePos[x+1][y+1][z+1] = (x*1.1, y*1.1, z*1.1)
+                    self.cubeRot[x+1][y+1][z+1] = (0.0, 0,0, 0,0, 0.0, 1.0, 0.0)
+                    self.cubes[x+1][y+1][z+1] = self.makeCube(x*1.1, y*1.1, z*1.1, 0.5, self.cubeColors[x+1][y+1][z+1])
 
         gl.glEnable(gl.GL_NORMALIZE)
         gl.glEnable(gl.GL_DEPTH_TEST);  
@@ -173,18 +192,21 @@ class CubeRenderer(QOpenGLWidget):
         gl.glRotated(self.xRot / 16.0, 1.0, 0.0, 0.0)
         gl.glRotated(self.yRot / 16.0, 0.0, 1.0, 0.0)
         gl.glRotated(self.zRot / 16.0, 0.0, 0.0, 1.0)
-
+        # gl.glPopMatrix()
         
         # self.drawCube(cube, 0.0, 0.0, 0.0, self.cube1Rot / 16.0)
 
         # for cube in self.cubes:
         #     self.drawCube(cube, 0.0, 0.0, 0.0, 0 / 16.0)
                                 #dx,  dy,  dz, angle
+        # gl.glPushMatrix()
 
         for x in range(3):
             for y in range(3):
                 for z in range(3):
-                    self.drawCube(self.cubes[x][y][z], 0.0, 0.0, 0.0, 0.0)
+                    pos = self.cubePos[x][y][z]
+                    rot = self.cubeRot[x][y][z]
+                    self.drawCube(self.cubes[x][y][z], pos[0], pos[1], pos[2], rot[0], rot[1], rot[2])
 
         gl.glPopMatrix()
 
@@ -206,6 +228,16 @@ class CubeRenderer(QOpenGLWidget):
 
     def mousePressEvent(self, event):
         self.lastPos = event.pos()
+
+        if(self.currentMove == -1):
+            if keyboard.is_pressed('u'):
+                self.currentMove = CubeRenderer.U;
+            if keyboard.is_pressed('r'):
+                self.currentMove = CubeRenderer.R;
+        else:
+            print(self.currentMove, self.thetaTotal)
+
+
 
     def mouseMoveEvent(self, event):
         dx = event.x() - self.lastPos.x()
@@ -234,7 +266,7 @@ class CubeRenderer(QOpenGLWidget):
     def makeCube(self, x, y, z, size, colors):
         list = gl.glGenLists(1)
         gl.glNewList(list, gl.GL_COMPILE)
-        size /= 2;
+        # size /= 2;
 
         # up face
         # gl.glColor3f(0.0,0.0,1.0)
@@ -305,11 +337,21 @@ class CubeRenderer(QOpenGLWidget):
         gl.glEndList()
 
         return list
-
-    def drawCube(self, cube, dx, dy, dz, angle):
+    first = 0
+    def drawCube(self, cube, dx, dy, dz, angleX, angleY, angleZ):
         gl.glPushMatrix()
-        gl.glTranslated(dx, dy, dz)
-        gl.glRotated(angle, 0.0, 0.0, 1.0)
+        # gl.glLoadIdentity()        
+        # gl.glTranslated(dx, dy, dz-40.0)
+        # gl.glRotated(angle, vx, vy, vz)
+        gl.glRotated(angleX, 1, 0, 0)
+        gl.glRotated(angleY, 0, 1, 0)
+        gl.glRotated(angleZ, 0, 0, 1)
+
+        if CubeRenderer.first <3*3*3:
+            CubeRenderer.first+=1
+            gl.glTranslated(dx, dy, dz)
+
+        # gl.glRotated(angle, vx, vy, vz)
         gl.glCallList(cube)
         gl.glPopMatrix()
 
@@ -320,11 +362,41 @@ class CubeRenderer(QOpenGLWidget):
             angle -= 360
         return angle
 
+
+    # def rotate(self, origin, point, theta):
+
+    #     ox, oy = origin
+    #     px, py = point
+
+    #     qx = ox + math.cos(theta) * (px - ox) - math.sin(theta) * (py - oy)
+    #     qy = oy + math.sin(theta) * (px - ox) + math.cos(theta) * (py - oy)
+    #     return qx, qy
+
+
+    def rotate_point(self, cx, cy, angle, px, py):
+      s = math.sin(angle);
+      c = math.cos(angle);
+
+      # translate point back to origin:
+      px -= cx;
+      py -= cy;
+
+      # // rotate point
+      xnew = px * c - py * s;
+      ynew = px * s + py * c;
+
+      # // translate point back:
+      px = xnew + cx;
+      py = ynew + cy;
+      return (px, py);
+
+
     def updatePosition(self):
+        # print(self.currentMove)
         if self.currentMove == CubeRenderer.U:
-            moveU()
+            self.moveU()
         elif self.currentMove == CubeRenderer.R:
-            pass
+            self.moveR()
         elif self.currentMove == CubeRenderer.F:
             pass
         elif self.currentMove == CubeRenderer.D:
@@ -336,15 +408,100 @@ class CubeRenderer(QOpenGLWidget):
         else:
             return
 
-        self.update()
+        if(self.currentMove == -1):
+            self.thetaTotal = 0
+        reset()
+        # self.update()
+
+
+    def swap4Cubes(self, ind1, ind2, ind3, ind4):
+        # print(id(self.cubes[ind1[0]][ind1[1]][ind1[2]]))
+        # print(id(self.cubes[ind2[0]][ind2[1]][ind2[2]]))
+        # print(id(self.cubes[ind3[0]][ind3[1]][ind3[2]]))
+        # print(id(self.cubes[ind4[0]][ind4[1]][ind4[2]]))
+        # print()
+
+        temp = self.cubes[ind1[0]][ind1[1]][ind1[2]]
+        self.cubes[ind1[0]][ind1[1]][ind1[2]] = self.cubes[ind4[0]][ind4[1]][ind4[2]]
+        self.cubes[ind4[0]][ind4[1]][ind4[2]] = self.cubes[ind3[0]][ind3[1]][ind3[2]]
+        self.cubes[ind3[0]][ind3[1]][ind3[2]] = self.cubes[ind2[0]][ind2[1]][ind2[2]]
+        self.cubes[ind2[0]][ind2[1]][ind2[2]] = temp
+
+        # print(id(self.cubes[ind1[0]][ind1[1]][ind1[2]]))
+        # print(id(self.cubes[ind2[0]][ind2[1]][ind2[2]]))
+        # print(id(self.cubes[ind3[0]][ind3[1]][ind3[2]]))
+        # print(id(self.cubes[ind4[0]][ind4[1]][ind4[2]]))
+
+        temp = self.cubeRot[ind1[0]][ind1[1]][ind1[2]]
+        self.cubeRot[ind1[0]][ind1[1]][ind1[2]] = self.cubeRot[ind4[0]][ind4[1]][ind4[2]]
+        self.cubeRot[ind4[0]][ind4[1]][ind4[2]] = self.cubeRot[ind3[0]][ind3[1]][ind3[2]]
+        self.cubeRot[ind3[0]][ind3[1]][ind3[2]] = self.cubeRot[ind2[0]][ind2[1]][ind2[2]]
+        self.cubeRot[ind2[0]][ind2[1]][ind2[2]] = temp
+
+        temp = self.cubePos[ind1[0]][ind1[1]][ind1[2]]
+        self.cubePos[ind1[0]][ind1[1]][ind1[2]] = self.cubePos[ind4[0]][ind4[1]][ind4[2]]
+        self.cubePos[ind4[0]][ind4[1]][ind4[2]] = self.cubePos[ind3[0]][ind3[1]][ind3[2]]
+        self.cubePos[ind3[0]][ind3[1]][ind3[2]] = self.cubePos[ind2[0]][ind2[1]][ind2[2]]
+        self.cubePos[ind2[0]][ind2[1]][ind2[2]] = temp
 
 
 
 
-    def moveU():
-        self.moveTheta += moveSpeed
-        if(self.moveTheta > 90):
-            self.moveTheta = 90
+    def moveU(self):
+        self.thetaTotal += self.moveSpeed
+        
+        if(self.firstPassMove):
+            self.firstPassMove = False
+
+            for x in range(3):
+                for z in range(3):
+                    self.orgTheta.append((self.cubeRot[x][2][z][0], self.cubeRot[x][2][z][1], self.cubeRot[x][2][z][2]))
+
+        for x in range(3):
+            for z in range(3):
+                self.cubeRot[x][2][z] = (self.orgTheta[z+3*x][0], self.orgTheta[z+3*x][1] - self.thetaTotal, self.orgTheta[z+3*x][2], 0, -1.0, 0)
+                # self.cubeRot[x][2][z] = (self.thetaTotal, 0, -1.0, 0)
+
+
+        if(self.thetaTotal >= 90):
             self.currentMove = -1
+            self.firstPassMove = True
+            self.orgTheta = []
+            # print(self.cubePos[2][2][2])
+
+            self.swap4Cubes((0,2,0),(2,2,0),(2,2,2),(0,2,2)) #in directions
+            # self.swap4Cubes((0,2,0),(2,2,0),(2,2,2),(0,2,2))
+            # self.swap4Cubes((0,2,0),(2,2,0),(2,2,2),(0,2,2))
+            # self.swap4Cubes((0,2,1),(1,2,0),(2,2,1),(1,2,2))
+            # self.swap4Cubes((0,2,2),(2,2,2),(2,2,0),(0,2,0))
+
+            # print(self.cubePos[2][2][2])
+
+
+
+
+    def moveR(self):
+        self.thetaTotal += self.moveSpeed
+        
+        if(self.firstPassMove):
+            self.firstPassMove = False
+
+            for y in range(3):
+                for z in range(3):
+                    # self.orgTheta.append(self.cubeRot[2][y][z][0])
+                    self.orgTheta.append((self.cubeRot[2][y][z][0], self.cubeRot[2][y][z][1], self.cubeRot[2][y][z][2]))
+
+        for y in range(3):
+            for z in range(3):
+                # self.cubeRot[2][y][z] = (self.orgTheta[z+3*y] + self.thetaTotal, -1.0, 0, 0)
+                self.cubeRot[2][y][z] = (self.orgTheta[z+3*y][0] - self.thetaTotal, self.orgTheta[z+3*y][1], self.orgTheta[z+3*y][2], -1.0, 0.0, 0)
+
+        if(self.thetaTotal >= 90):
+            self.currentMove = -1
+            self.firstPassMove = True
+            self.orgTheta = []
+            self.swap4Cubes((2,2,2),(2,2,0),(2,0,0),(2,0,2))#in direction
+
+
 
 
