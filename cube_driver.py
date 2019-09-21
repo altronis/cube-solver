@@ -391,6 +391,7 @@ def to_cube(matrix):
 
             indices.append(eval(exec_string))
         exec_string = "cube.%s.piece = indices[0], indices[1]" % e
+        exec(exec_string)
 
 
     for c in corners:
@@ -407,7 +408,9 @@ def to_cube(matrix):
 
             indices.append(eval(exec_string))
         exec_string = "cube.%s.piece = indices[0], indices[1], indices[2]" % c
+        exec(exec_string)
     return cube
 
 
-cube = Cube()
+cube = to_cube([[[4, 1, 4], [5, 0, 0], [2, 5, 1]], [[0, 2, 4], [1, 1, 3], [5, 2, 0]], [[1, 4, 3], [2, 2, 0], [2, 4, 2]], [[5, 3, 5], [4, 3, 5], [1, 0, 4]], [[0, 5, 2], [0, 4, 1], [0, 1, 3]], [[1, 2, 3], [3, 5, 4], [3, 3, 5]]])
+x = 3
