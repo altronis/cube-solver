@@ -40,7 +40,7 @@ class CubeRenderer(QOpenGLWidget):
 
         self.currentMove = -1
         self.thetaTotal = 0
-        self.moveSpeed = 10.0
+        self.moveSpeed = 7.5
 
         self.cubeRot = []
         self.cubePos = []
@@ -321,9 +321,11 @@ class CubeRenderer(QOpenGLWidget):
                         self.cubes[x+1][y+1][z+1] = self.makeCube(x*1.1, y*1.1, z*1.1, 0.5, self.cubeColors[x+1][y+1][z+1])
             self.currentMove = -1
             self.thetaTotal = 0
+            return
 
         if self.currentMove == -1 and self.moveQueue != []:
             self.currentMove = self.moveQueue.pop(0)
+            return
 
         if self.currentMove == CubeRenderer.U:
             self.moveU()
@@ -364,7 +366,7 @@ class CubeRenderer(QOpenGLWidget):
 
     def moveU(self):
         self.thetaTotal += self.moveSpeed
-        
+
         if(self.firstPassMove):
             self.firstPassMove = False
             for x in range(3):
