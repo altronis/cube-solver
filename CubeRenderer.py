@@ -1,11 +1,7 @@
-import sys
-from PyQt5.QtCore import pyqtSignal, Qt, QTimer
-from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QMessageBox, QOpenGLWidget, QScrollArea, QSizePolicy, QSlider, QWidget)
+from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtWidgets import QOpenGLWidget
 import OpenGL.GL as gl
 import math
-import keyboard
-# from cube_driver import *
-import time
 
 
 class CubeRenderer(QOpenGLWidget):

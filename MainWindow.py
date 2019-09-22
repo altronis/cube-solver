@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QScrollArea, QSizePolicy, QSlider, QWidget)
+from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QScrollArea, QWidget)
 from CubeRenderer import CubeRenderer
 from PyQt5.QtCore import Qt
 import sys
