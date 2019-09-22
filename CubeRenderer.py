@@ -43,7 +43,7 @@ class CubeRenderer(QOpenGLWidget):
 
         timer = QTimer(self)
         timer.timeout.connect(self.updatePosition)
-        timer.start(20)
+        timer.start(1)
 
     def reset(self, stickers):
         self.firstPassMove = True
