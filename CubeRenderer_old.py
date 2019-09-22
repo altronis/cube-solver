@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QM
 import OpenGL.GL as gl
 import math
 import keyboard
-# from cube_driver import *
+from cube_driver import *
 import time
 
 
@@ -29,14 +29,13 @@ class CubeRenderer(QOpenGLWidget):
 
         self.solution = None
         self.counter = 0
-        # self.cube = Cube()
-        # self.double_count = 0
-        self.moveQueue = []
+        self.cube = Cube()
+        self.double_count = 0
 
         self.stickers = stickers
 
-        self.xRot = 400
-        self.yRot = 675
+        self.xRot = 0
+        self.yRot = 0
         self.zRot = 0
 
         self.reset(self.stickers)
@@ -49,9 +48,11 @@ class CubeRenderer(QOpenGLWidget):
         self.firstPassMove = True
         self.orgTheta = []
 
+
+
         self.currentMove = -1
         self.thetaTotal = 0
-        self.moveSpeed = 10.0
+        self.moveSpeed = 3.0
 
         self.cubeRot = []
         self.cubePos = []
@@ -158,7 +159,6 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.xRot:
             self.xRot = angle
-            print("x",self.xRot)
             #self.update()
 
 
@@ -167,7 +167,6 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.yRot:
             self.yRot = angle
-            print("y",self.yRot)
             #self.update()
 
 
@@ -176,7 +175,6 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.zRot:
             self.zRot = angle
-            print("z", self.zRot)
             #self.update()
 
 
@@ -240,21 +238,21 @@ class CubeRenderer(QOpenGLWidget):
     def mousePressEvent(self, event):
         self.lastPos = event.pos()
 
-        # if(self.currentMove == -1):
-        #     if keyboard.is_pressed('u'):
-        #         self.currentMove = CubeRenderer.U;
-        #     elif keyboard.is_pressed('r'):
-        #         self.currentMove = CubeRenderer.R;            
-        #     elif keyboard.is_pressed('f'):
-        #         self.currentMove = CubeRenderer.F;            
-        #     elif keyboard.is_pressed('d'):
-        #         self.currentMove = CubeRenderer.D;            
-        #     elif keyboard.is_pressed('l'):
-        #         self.currentMove = CubeRenderer.L;            
-        #     elif keyboard.is_pressed('b'):
-        #         self.currentMove = CubeRenderer.B;
-        # else:
-        #     print(self.currentMove, self.thetaTotal)
+        if(self.currentMove == -1):
+            if keyboard.is_pressed('u'):
+                self.currentMove = CubeRenderer.U;
+            elif keyboard.is_pressed('r'):
+                self.currentMove = CubeRenderer.R;            
+            elif keyboard.is_pressed('f'):
+                self.currentMove = CubeRenderer.F;            
+            elif keyboard.is_pressed('d'):
+                self.currentMove = CubeRenderer.D;            
+            elif keyboard.is_pressed('l'):
+                self.currentMove = CubeRenderer.L;            
+            elif keyboard.is_pressed('b'):
+                self.currentMove = CubeRenderer.B;
+        else:
+            print(self.currentMove, self.thetaTotal)
 
 
 
@@ -427,34 +425,32 @@ class CubeRenderer(QOpenGLWidget):
                         self.cubeRot[x+1][y+1][z+1] = (0.0, 0,0, 0,0, 0.0, 1.0, 0.0)
                         self.cubes[x+1][y+1][z+1] = self.makeCube(x*1.1, y*1.1, z*1.1, 0.5, self.cubeColors[x+1][y+1][z+1])
             self.currentMove = -1
-            self.thetaTotal = 0
             return
         
-        # if(self.currentMove == -1):
-        #     self.counter += 1
-        # else:
-        #     self.counter = 0
+        if(self.currentMove == -1):
+            self.counter += 1
+        else:
+            self.counter = 0
 
 
-        # if self.solution == [] or self.solution is None or not self.counter % 10 == 0:
-        #     self.update()
-        #     return
-        # else:
-        #     if self.currentMove == -1 and self.counter % 10 == 0:
-        #         if self.solution[0].turns == 2:
-        #             self.currentMove = to_int(self.cube.halve_move(self.solution[0]))
-        #             if not self.double_count % 2 == 0:
-        #                 self.solution = self.solution[1:]
-        #             self.double_count += 1
-        #         else:
-        #             self.currentMove = to_int(self.solution[0])
-        #             self.solution = self.solution[1:]
-        #         return
+        if self.solution == [] or self.solution is None or not self.counter % 10 == 0:
+            self.update()
+            return
+        else:
+            if self.currentMove == -1 and self.counter % 10 == 0:
+                if self.solution[0].turns == 2:
+                    self.currentMove = to_int(self.cube.halve_move(self.solution[0]))
+                    if not self.double_count % 2 == 0:
+                        self.solution = self.solution[1:]
+                    self.double_count += 1
+                else:
+                    self.currentMove = to_int(self.solution[0])
+                    self.solution = self.solution[1:]
+                return
 
 
 
-        if self.currentMove == -1 and self.moveQueue != []:
-            self.currentMove = self.moveQueue.pop(0)
+
 
 
 
@@ -499,7 +495,7 @@ class CubeRenderer(QOpenGLWidget):
             # self.update()
         else:
             self.update()
-            # return
+            return
 
         if(self.currentMove == -1):
             self.thetaTotal = 0

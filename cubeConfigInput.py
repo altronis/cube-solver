@@ -256,14 +256,14 @@ class PyQtWindow(QMainWindow):
         # [[L, U, R], [L, B, F], [B, U, F]]
         # ]
 
-        stickers = [
-        [[U, U, U], [U, U, U], [U, U, U]],
-        [[R, R, R], [R, R, R], [R, R, R]],
-        [[F, F, F], [F, F, F], [F, F, F]],
-        [[D, D, D], [D, D, D], [D, D, D]],
-        [[L, L, L], [L, L, L], [L, L, L]],
-        [[B, B, B], [B, B, B], [B, B, B]]
-        ]
+        # stickers = [
+        # [[U, U, U], [U, U, U], [U, U, U]],
+        # [[R, R, R], [R, R, R], [R, R, R]],
+        # [[F, F, F], [F, F, F], [F, F, F]],
+        # [[D, D, D], [D, D, D], [D, D, D]],
+        # [[L, L, L], [L, L, L], [L, L, L]],
+        # [[B, B, B], [B, B, B], [B, B, B]]
+        # ]
 
         print(colorsArray)
 
