@@ -158,7 +158,7 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.xRot:
             self.xRot = angle
-            print("x",self.xRot)
+            # print("x",self.xRot)
             #self.update()
 
 
@@ -167,7 +167,7 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.yRot:
             self.yRot = angle
-            print("y",self.yRot)
+            # print("y",self.yRot)
             #self.update()
 
 
@@ -176,7 +176,7 @@ class CubeRenderer(QOpenGLWidget):
 
         if angle != self.zRot:
             self.zRot = angle
-            print("z", self.zRot)
+            # print("z", self.zRot)
             #self.update()
 
 
