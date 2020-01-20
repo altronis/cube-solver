@@ -34,7 +34,7 @@ class PyQtWindow(QMainWindow):
         self.L01.clicked.connect(lambda: self.buttonPressed(self.L01))
         self.L02.clicked.connect(lambda: self.buttonPressed(self.L02))
         self.L10.clicked.connect(lambda: self.buttonPressed(self.L10))
-        self.L11.clicked.connect(lambda: self.buttonPressed(self.L11))
+
         self.L12.clicked.connect(lambda: self.buttonPressed(self.L12))
         self.L20.clicked.connect(lambda: self.buttonPressed(self.L20))
         self.L21.clicked.connect(lambda: self.buttonPressed(self.L21))
@@ -45,7 +45,7 @@ class PyQtWindow(QMainWindow):
         self.U01.clicked.connect(lambda: self.buttonPressed(self.U01))
         self.U02.clicked.connect(lambda: self.buttonPressed(self.U02))
         self.U10.clicked.connect(lambda: self.buttonPressed(self.U10))
-        self.U11.clicked.connect(lambda: self.buttonPressed(self.U11))
+
         self.U12.clicked.connect(lambda: self.buttonPressed(self.U12))
         self.U20.clicked.connect(lambda: self.buttonPressed(self.U20))
         self.U21.clicked.connect(lambda: self.buttonPressed(self.U21))
@@ -56,7 +56,7 @@ class PyQtWindow(QMainWindow):
         self.B01.clicked.connect(lambda: self.buttonPressed(self.B01))
         self.B02.clicked.connect(lambda: self.buttonPressed(self.B02))
         self.B10.clicked.connect(lambda: self.buttonPressed(self.B10))
-        self.B11.clicked.connect(lambda: self.buttonPressed(self.B11))
+
         self.B12.clicked.connect(lambda: self.buttonPressed(self.B12))
         self.B20.clicked.connect(lambda: self.buttonPressed(self.B20))
         self.B21.clicked.connect(lambda: self.buttonPressed(self.B21))
@@ -67,7 +67,7 @@ class PyQtWindow(QMainWindow):
         self.F01.clicked.connect(lambda: self.buttonPressed(self.F01))
         self.F02.clicked.connect(lambda: self.buttonPressed(self.F02))
         self.F10.clicked.connect(lambda: self.buttonPressed(self.F10))
-        self.F11.clicked.connect(lambda: self.buttonPressed(self.F11))
+
         self.F12.clicked.connect(lambda: self.buttonPressed(self.F12))
         self.F20.clicked.connect(lambda: self.buttonPressed(self.F20))
         self.F21.clicked.connect(lambda: self.buttonPressed(self.F21))
@@ -78,7 +78,7 @@ class PyQtWindow(QMainWindow):
         self.R01.clicked.connect(lambda: self.buttonPressed(self.R01))
         self.R02.clicked.connect(lambda: self.buttonPressed(self.R02))
         self.R10.clicked.connect(lambda: self.buttonPressed(self.R10))
-        self.R11.clicked.connect(lambda: self.buttonPressed(self.R11))
+
         self.R12.clicked.connect(lambda: self.buttonPressed(self.R12))
         self.R20.clicked.connect(lambda: self.buttonPressed(self.R20))
         self.R21.clicked.connect(lambda: self.buttonPressed(self.R21))
@@ -89,19 +89,20 @@ class PyQtWindow(QMainWindow):
         self.D01.clicked.connect(lambda: self.buttonPressed(self.D01))
         self.D02.clicked.connect(lambda: self.buttonPressed(self.D02))
         self.D10.clicked.connect(lambda: self.buttonPressed(self.D10))
-        self.D11.clicked.connect(lambda: self.buttonPressed(self.D11))
+
         self.D12.clicked.connect(lambda: self.buttonPressed(self.D12))
         self.D20.clicked.connect(lambda: self.buttonPressed(self.D20))
         self.D21.clicked.connect(lambda: self.buttonPressed(self.D21))
         self.D22.clicked.connect(lambda: self.buttonPressed(self.D22))
 
-        self.clearButton.clicked.connect(self.clearColors)
+        self.clearButton.clicked.connect(self.initialize)
 
         self.submitButton.clicked.connect(self.submitLayout)
 
         self.randomButton.clicked.connect(self.randomizeCube)
 
         self.show()
+        self.initialize()
 
         # function changes button color of the pressed button based on user input
 
@@ -123,12 +124,12 @@ class PyQtWindow(QMainWindow):
                 button.setStyleSheet('background-color: green')
 
     # function clears all color attributes of the board
-    def clearColors(self):
+    def initialize(self):
         self.L00.setStyleSheet('background-color: none')
         self.L01.setStyleSheet('background-color: none')
         self.L02.setStyleSheet('background-color: none')
         self.L10.setStyleSheet('background-color: none')
-        self.L11.setStyleSheet('background-color: none')
+        self.L11.setStyleSheet('background-color: orange')
         self.L12.setStyleSheet('background-color: none')
         self.L20.setStyleSheet('background-color: none')
         self.L21.setStyleSheet('background-color: none')
@@ -138,7 +139,7 @@ class PyQtWindow(QMainWindow):
         self.U01.setStyleSheet('background-color: none')
         self.U02.setStyleSheet('background-color: none')
         self.U10.setStyleSheet('background-color: none')
-        self.U11.setStyleSheet('background-color: none')
+        self.U11.setStyleSheet('background-color: white')
         self.U12.setStyleSheet('background-color: none')
         self.U20.setStyleSheet('background-color: none')
         self.U21.setStyleSheet('background-color: none')
@@ -148,7 +149,7 @@ class PyQtWindow(QMainWindow):
         self.R01.setStyleSheet('background-color: none')
         self.R02.setStyleSheet('background-color: none')
         self.R10.setStyleSheet('background-color: none')
-        self.R11.setStyleSheet('background-color: none')
+        self.R11.setStyleSheet('background-color: red')
         self.R12.setStyleSheet('background-color: none')
         self.R20.setStyleSheet('background-color: none')
         self.R21.setStyleSheet('background-color: none')
@@ -158,7 +159,7 @@ class PyQtWindow(QMainWindow):
         self.D01.setStyleSheet('background-color: none')
         self.D02.setStyleSheet('background-color: none')
         self.D10.setStyleSheet('background-color: none')
-        self.D11.setStyleSheet('background-color: none')
+        self.D11.setStyleSheet('background-color: yellow')
         self.D12.setStyleSheet('background-color: none')
         self.D20.setStyleSheet('background-color: none')
         self.D21.setStyleSheet('background-color: none')
@@ -168,7 +169,7 @@ class PyQtWindow(QMainWindow):
         self.B01.setStyleSheet('background-color: none')
         self.B02.setStyleSheet('background-color: none')
         self.B10.setStyleSheet('background-color: none')
-        self.B11.setStyleSheet('background-color: none')
+        self.B11.setStyleSheet('background-color: blue')
         self.B12.setStyleSheet('background-color: none')
         self.B20.setStyleSheet('background-color: none')
         self.B21.setStyleSheet('background-color: none')
@@ -178,7 +179,7 @@ class PyQtWindow(QMainWindow):
         self.F01.setStyleSheet('background-color: none')
         self.F02.setStyleSheet('background-color: none')
         self.F10.setStyleSheet('background-color: none')
-        self.F11.setStyleSheet('background-color: none')
+        self.F11.setStyleSheet('background-color: green')
         self.F12.setStyleSheet('background-color: none')
         self.F20.setStyleSheet('background-color: none')
         self.F21.setStyleSheet('background-color: none')
