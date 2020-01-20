@@ -1,12 +1,7 @@
-from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import uic
-import random
-from CubeRenderer import CubeRenderer
 from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QScrollArea, QSizePolicy, QSlider, QWidget)
 from CubeRenderer import CubeRenderer
-from PyQt5.QtCore import Qt
 import sys
-import keyboard
 from cube_driver import *
 
 
@@ -17,12 +12,10 @@ class PyQtWindow(QMainWindow):
 
         self.title = 'Cube Solver'
 
-
         uic.loadUi("CubeConfigLayout.ui", self)
 
         # dropdown options for color combo
         self.title = 'Cube Solver'
-
 
         self.colorBox.addItem("Red")
         self.colorBox.addItem("Orange")
@@ -110,6 +103,7 @@ class PyQtWindow(QMainWindow):
         self.show()
 
         # function changes button color of the pressed button based on user input
+
     def buttonPressed(self, button):
         if self.EditColorBox.currentText() == "Clear Color":
             button.setStyleSheet('background-color: white')
@@ -231,40 +225,6 @@ class PyQtWindow(QMainWindow):
              [self.getColor(self.B20), self.getColor(self.B21), self.getColor(self.B22)]]
         ]
 
-        U = 0
-        R = 1
-        F = 2
-        D = 3
-        L = 4
-        B = 5
-
-        # sticfrs = [
-        # [[R,L,D], [U,U,U], [U,U,U]],
-        # [[R,R,B], [L,F,R], [R,R,L]],
-        # [[R,L,D], [B,F,F], [D,F,F]],
-        # [[U,F,B], [D,R,U], [R,L,F]],
-        # [[U,R,F], [U,R,F], [U,B,F]],
-        # [[D,R,L], [U,R,F], [D,R,F]]
-        # ]
-
-        # stickers = [
-        # [[U, L, D], [L, U, D], [D, B, U]],
-        # [[R, U, B], [B, R, D], [F, R, U]],
-        # [[L, R, L], [D, F, F], [D, R, F]],
-        # [[U, B, B], [R, D, D], [R, U, R]],
-        # [[D, B, L], [F, L, F], [B, L, F]],
-        # [[L, U, R], [L, B, F], [B, U, F]]
-        # ]
-
-        # stickers = [
-        # [[U, U, U], [U, U, U], [U, U, U]],
-        # [[R, R, R], [R, R, R], [R, R, R]],
-        # [[F, F, F], [F, F, F], [F, F, F]],
-        # [[D, D, D], [D, D, D], [D, D, D]],
-        # [[L, L, L], [L, L, L], [L, L, L]],
-        # [[B, B, B], [B, B, B], [B, B, B]]
-        # ]
-
         print(colorsArray)
 
         cube = to_cube(colorsArray)
@@ -289,11 +249,13 @@ class PyQtWindow(QMainWindow):
         print(stringify(solution))
         solution += solve_FR_pair(cube)
         print(stringify(solution))
+        print()
 
         solution += solve_EO(cube)
         print(stringify(solution))
         solution += solve_CO(cube)
         print(stringify(solution))
+        print()
 
         solution += solve_CP_1(cube)
         print(stringify(solution))
@@ -307,7 +269,7 @@ class PyQtWindow(QMainWindow):
         solution += solve_EP_2(cube)
         print(stringify(solution))
 
-        #run the renderer script
+        # run the renderer script
         centralWidget = QWidget()
         self.setCentralWidget(centralWidget)
 
@@ -322,8 +284,7 @@ class PyQtWindow(QMainWindow):
 
         self.glWidget.solution = solution
 
-        # app.exec_()
-
+        app.exec_()
 
 
 app = QApplication([])

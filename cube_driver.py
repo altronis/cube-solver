@@ -228,7 +228,7 @@ def solve_EO(cube):
     if cycle_number >= 0:
         solution += [cube.U] * cycle_number + ADJ_EDGES
 
-    cycle_number = cycle_of(orientations, [0, 1, 0, 1])
+    cycle_number = cycle_of(orientations, [1, 0, 1, 0])
     if cycle_number >= 0:
         solution += [cube.U] * cycle_number + OPP_EDGES
 
@@ -251,6 +251,7 @@ def solve_CO(cube):
 
     solution = []
     orientations = [cube.UBL.co(), cube.URB.co(), cube.UFR.co(), cube.ULF.co()]
+    print(orientations)
 
     cycle_number = cycle_of(orientations, [1, 1, 1, 0])
     if cycle_number >= 0:
