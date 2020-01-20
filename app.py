@@ -1,8 +1,9 @@
 from PyQt5 import uic
-from PyQt5.QtWidgets import (QAction, QApplication, QGridLayout, QMainWindow, QScrollArea, QSizePolicy, QSlider, QWidget)
+from PyQt5.QtWidgets import (QApplication, QGridLayout, QMainWindow, QScrollArea, QWidget)
 from CubeRenderer import CubeRenderer
 import sys
 from cube_driver import *
+import random
 
 
 class PyQtWindow(QMainWindow):
@@ -98,7 +99,7 @@ class PyQtWindow(QMainWindow):
 
         self.submitButton.clicked.connect(self.submitLayout)
 
-        # self.randomButton.clicked.connect(self.randomizeCube)
+        self.randomButton.clicked.connect(self.randomizeCube)
 
         self.show()
 
@@ -229,7 +230,9 @@ class PyQtWindow(QMainWindow):
 
         cube = to_cube(colorsArray)
         print(cube.BL.piece)
+        self.execute(cube, colorsArray)
 
+    def execute(self, cube, colorsArray):
         solution = []  # List of Moves
 
         solution += solve_DB(cube)
@@ -279,12 +282,25 @@ class PyQtWindow(QMainWindow):
         self.glWidgetArea.setWidgetResizable(True)
 
         centralLayout = QGridLayout()
-        centralLayout.addWidget(self.glWidgetArea, 0, 0)
+        centralLayout.addWidget(self.glWidgetArea)
         centralWidget.setLayout(centralLayout)
 
-        self.glWidget.solution = solution
+        self.glWidget.solution = solution + [cube.R]
 
         app.exec_()
+
+    def randomizeCube(self):
+        cube = Cube()
+        list_of_moves = []
+
+        for i in range(100):
+            move = random.choice(moves)
+            exec("list_of_moves.append(cube.%s)" % move)
+
+        cube.apply_list_of_moves(list_of_moves)
+        print(to_matrix(cube))
+
+        self.execute(cube, to_matrix(cube))
 
 
 app = QApplication([])

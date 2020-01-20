@@ -95,7 +95,6 @@ def solve_DB(cube):
     solution = solve_edge(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -107,7 +106,6 @@ def solve_DL(cube):
     solution = solve_edge(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -119,7 +117,6 @@ def solve_DR(cube):
     solution = solve_edge(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -133,7 +130,6 @@ def solve_DF(cube):
     solution = solve_edge(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -149,7 +145,6 @@ def solve_BL_pair(cube):
     solution = solve_pair(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -165,7 +160,6 @@ def solve_BR_pair(cube):
     solution = solve_pair(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -180,7 +174,6 @@ def solve_FL_pair(cube):
     solution = solve_pair(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -194,7 +187,6 @@ def solve_FR_pair(cube):
     solution = solve_pair(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -222,7 +214,6 @@ def solve_EO(cube):
 
     solution = []
     orientations = [cube.UB.eo(), cube.UR.eo(), cube.UF.eo(), cube.UL.eo()]
-    print(orientations)
 
     cycle_number = cycle_of(orientations, [0, 1, 1, 0])
     if cycle_number >= 0:
@@ -251,7 +242,6 @@ def solve_CO(cube):
 
     solution = []
     orientations = [cube.UBL.co(), cube.URB.co(), cube.UFR.co(), cube.ULF.co()]
-    print(orientations)
 
     cycle_number = cycle_of(orientations, [1, 1, 1, 0])
     if cycle_number >= 0:
@@ -293,7 +283,6 @@ def solve_CP_1(cube):
     solution = solve_corner(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -307,7 +296,6 @@ def solve_CP_2(cube):
     solution = solve_corner(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -321,7 +309,6 @@ def solve_CP_3(cube):
     solution = solve_corner(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -335,7 +322,6 @@ def solve_EP_1(cube):
     solution = solve_edge(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
@@ -349,14 +335,13 @@ def solve_EP_2(cube):
     solution = solve_edge(cube, slot_to_solve, moveset, max_length)
     cube.apply_list_of_moves(solution)
 
-    output_message = ""
     return solution
 
 
 def to_matrix(cube):
     matrix = []
     for i in range(6):
-        matrix.append([[0, 0, 0]] * 3)
+        matrix.append([[0, 0, 0], [0, i, 0], [0, 0, 0]])
 
     for e in edges:
         for i in range(2):
