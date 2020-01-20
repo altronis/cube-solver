@@ -1,0 +1,4 @@
+keyboard==0.13.4
+PyOpenGL==3.1.5
+PyQt5==5.14.1
+PyQt5-sip==12.7.0
