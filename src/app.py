@@ -8,11 +8,10 @@ import random
 
 class PyQtWindow(QMainWindow):
     def __init__(self):
-        # app = QApplication([])
         super().__init__()
 
         self.title = 'Cube Solver'
-
+        
         uic.loadUi("CubeConfigLayout.ui", self)
 
         # dropdown options for color combo
@@ -237,39 +236,39 @@ class PyQtWindow(QMainWindow):
         solution = []  # List of Moves
 
         solution += solve_DB(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_DL(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_DR(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_DF(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
 
         solution += solve_BL_pair(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_BR_pair(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_FL_pair(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_FR_pair(cube)
-        print(stringify(solution))
-        print()
+        # print(stringify(solution))
+        # print()
 
         solution += solve_EO(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_CO(cube)
-        print(stringify(solution))
-        print()
+        # print(stringify(solution))
+        # print()
 
         solution += solve_CP_1(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_CP_2(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_CP_3(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
 
         solution += solve_EP_1(cube)
-        print(stringify(solution))
+        # print(stringify(solution))
         solution += solve_EP_2(cube)
         print(stringify(solution))
 
@@ -286,9 +285,13 @@ class PyQtWindow(QMainWindow):
         centralLayout.addWidget(self.glWidgetArea)
         centralWidget.setLayout(centralLayout)
 
-        self.glWidget.solution = solution + [cube.R]
-
-        app.exec_()
+        for move in solution:
+            if move.turns == 2:
+                intMove = to_int(cube.halve_move(move))
+                self.glWidget.moveQueue.append(intMove)
+                self.glWidget.moveQueue.append(intMove)
+            else:
+                self.glWidget.moveQueue.append(to_int(move))
 
     def randomizeCube(self):
         cube = Cube()
@@ -299,12 +302,10 @@ class PyQtWindow(QMainWindow):
             exec("list_of_moves.append(cube.%s)" % move)
 
         cube.apply_list_of_moves(list_of_moves)
-        print(to_matrix(cube))
-
         self.execute(cube, to_matrix(cube))
 
-
-app = QApplication([])
-mainWin = PyQtWindow()
-mainWin.show()
-sys.exit(app.exec_())
+if __name__ == '__main__':
+    app = QApplication([])
+    mainWin = PyQtWindow()
+    mainWin.show()
+    sys.exit(app.exec_())
